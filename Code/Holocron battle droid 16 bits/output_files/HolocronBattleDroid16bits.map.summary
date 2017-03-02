@@ -1,7 +1,7 @@
-Analysis & Elaboration Status : Successful - Wed Mar 01 21:03:12 2017
+Analysis & Elaboration Status : Successful - Thu Mar 02 02:33:56 2017
 Quartus Prime Version : 16.1.0 Build 196 10/24/2016 SJ Lite Edition
 Revision Name : HolocronBattleDroid16bits
-Top-level Entity Name : ControlUnity_x16
+Top-level Entity Name : Holocron_BattleDroid16bits
 Family : Cyclone V
 Logic utilization (in ALMs) : N/A until Partition Merge
 Total registers : N/A until Partition Merge
