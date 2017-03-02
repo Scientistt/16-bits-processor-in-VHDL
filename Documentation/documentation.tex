@@ -1,0 +1,1586 @@
+%
+% Created by Fabio Vitor de Oliveira Noronha
+%
+
+\documentclass{article}
+
+
+\usepackage{lipsum}
+\usepackage[margin=3cm, right=2cm, bottom=2cm, includefoot]{geometry}
+\newenvironment{bottompar}{\par\vspace*{\fill}}{\clearpage}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\newcommand\tab[1][0.50cm]{\hspace*{#1}}
+\renewcommand{\contentsname}{Conte\'{u}do}
+\renewcommand*\listfigurename{Lista de Figuras}
+\renewcommand*\listtablename{Lista de Tabelas}
+
+\usepackage{tabu}
+\usepackage{longtable}
+
+% images Package
+\usepackage{graphicx}
+\usepackage{float}
+
+
+\usepackage{listings}
+
+
+\lstdefinelanguage{VHDL}{
+	morekeywords=[1]{
+		library,use,all,entity,is,port,in,out,end,architecture,of,
+		begin,and,or,Not,downto,ALL
+	},
+	morekeywords=[2]{
+		STD_LOGIC_VECTOR,STD_LOGIC,IEEE,STD_LOGIC_1164,
+		NUMERIC_STD,STD_LOGIC_ARITH,STD_LOGIC_UNSIGNED,std_logic_vector,
+		std_logic
+	}
+}
+
+\lstdefinelanguage{MIPSCIENTIST}{
+	morekeywords=[1]{
+		add, sub, addi, subi, and, andi, nand, nandi, or, ori, nor, nori, xor, xori, xnor, nori, sra 
+		srl, slla, equ, equi, dif, difi, sma, smai, smeq, smeqi, grt, grti, greq, greqi, mult, 
+		multi, div, divi, jr, jim, jrbt, jrbf, jimbt, jimbf, ldr, ldi, str, sti, move, movi
+	},
+	morekeywords=[2]{
+		0,1,2,3,4,5,6,7,8,9
+	},
+	morekeywords=[3]{
+		$s0, $s1, $s2, $s3, $s4, $s5, $s6, $s7, $t0, $t1, $t2, $t3, $low, $high, $zero, $bool
+	}
+}
+
+\usepackage[usenames,dvipsnames]{xcolor}
+
+\colorlet{keyword}{blue!100!black!80}
+\colorlet{STD}{RubineRed}
+
+\colorlet{comm}{RoyalBlue}
+\colorlet{regs}{Sepia}
+\colorlet{numbers}{Tan}
+
+\lstdefinestyle{vhdl}{
+	language     = VHDL,
+	basicstyle   = \footnotesize \ttfamily,
+	keywordstyle = [1]\color{keyword}\bfseries,
+	keywordstyle = [2]\color{STD}\bfseries,
+	keywordstyle = [3]\color{regs}\bfseries,
+	breaklines	 = true,                % sets automatic line breaking
+	tabsize=3		                   % sets default tabsize to 2 spaces
+}
+
+\lstdefinestyle{mipscientist}{
+	language     = MIPSCIENTIST,
+	basicstyle   = \footnotesize \ttfamily,
+	keywordstyle = [2]\color{numbers}\bfseries,
+	keywordstyle = [1]\color{comm}\bfseries,
+	keywordstyle = [3]\color{regs}\bfseries,
+	breaklines=true,                % sets automatic line breaking
+	tabsize=3		                   % sets default tabsize to 2 spaces
+}
+
+\usepackage[hidelinks]{hyperref}
+\usepackage[none]{hyphenat}
+
+\begin{document}
+	
+% --- --- ---
+	
+	\begin{titlepage}
+		\begin{center}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[height=0.8in]{images/ufrr_logo.png}
+			\end{figure}
+			\textsc{\large Poder Executivo}\\
+			\textsc{\large Minist\'{e}rio da Educa\c{c}\~{a}o}\\
+			\textsc{\large Universidade Federal de Roraima}\\
+			\textsc{\large Departamento de Ci\^{e}ncia a Computa\c{c}\~{a}o}\\
+			[2in]			
+			\textsc{\large Arquitetura e Organiza\c{c}\~{a}o de Computadores}\\
+			[1in]			
+			\textsc{\large Relat\'{o}rio do Projeto: Processador Holocron Battle Droid 16 bits}\\
+			[1.5in]
+			\begin{flushleft}
+				\textsc{\large Alunos:}\\
+				\textsc{\large 	\tab Bruno Cesar da Silva Claudino  - 1201424425\\
+								\tab Fabio Vitor de Oliveira Noronha - 2201424404}
+			\end{flushleft}
+			\begin{bottompar}
+				\textsc{\large Mar\c{c}o de 2017 \\ Boa Vista/Roraima}
+			\end{bottompar}
+		\end{center}
+	\end{titlepage}
+% --- --- ---
+	\begin{center}
+		\thispagestyle{empty}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[height=0.8in]{images/ufrr_logo.png}
+		\end{figure}
+		\textsc{\large Poder Executivo}\\
+		\textsc{\large Minist\'{e}rio da Educa\c{c}\~{a}o}\\
+		\textsc{\large Universidade Federal de Roraima}\\
+		\textsc{\large Departamento de Ci\^{e}ncia a Computa\c{c}\~{a}o}\\
+		[2in]			
+		\textsc{\large Arquitetura e Organiza\c{c}\~{a}o de Computadores}\\
+		[1in]			
+		\textsc{\large Relat\'{o}rio do Projeto: Processador Holocron Battle Droid 16 bits}\\
+		
+		\begin{bottompar}
+			\textsc{\large Mar\c{c}o de 2017 \\ Boa Vista/Roraima}
+		\end{bottompar}
+	\end{center}
+	\cleardoublepage
+	
+% --- --- ---
+
+	\section*{Resumo}
+	\thispagestyle{empty}	
+		\tab O presente documento relata alguns pontos importantes do planejamento, implementa\c{c}\~{a}o e testes do processador Holocron Battle Droid 16 bits. O mesmo foi desenvolvido em forma de trabalho final para a disciplina de arquitetura e organiza\c{c}\~{a}o de computadores (DCC301) na Universidade Federal de Roraima no semestre 2016.6. O Processador em quest\~ao foi baseado em arquiteturas conhecidas que ser\~ao descritas detalhadamente mais adiante, possui XXX componentes diferentes, num total de XXX componentes e 47 opera\c{c}\~{o}es poss\'iveis, o que abre um leque de muitas possibilidades para implementa\c{c}\~{a}o de algoritmos que podem ser executados pelo Holocron Battle Droid 16 bits.\\
+		\tab O processador em quest\'~ao foi implementado usando a linguagem de descri\c{c}\~{a}o de hardware VHDL. E os testes executados foram feitos utilizando-se waveforms geradas que simulam o comportamento do hardware descrito, estes mostram um pouco do funcionamento e performace do processador.\\ \\
+	
+	\cleardoublepage
+	
+% --- --- ---
+
+	\tableofcontents
+	\thispagestyle{empty}
+	\cleardoublepage
+	
+% --- --- ---
+
+	\listoffigures
+	\addcontentsline{toc}{section}{Lista de Figuras}
+	\cleardoublepage
+	
+% --- --- ---
+
+	\listoftables
+	\addcontentsline{toc}{section}{Lista de Tabelas}
+	\cleardoublepage
+	
+% --- --- ---
+
+	\section{Especifica\c{c}\~{o}es}
+		\tab O Holocron Battle Droid 16 bits foi desenvolvido para a disciplina de arquitetura e organiza\c{c}\~{a}o de computadores da Universidade Federal de Roraima no semestre 2016.2. O Processador \'{e} uniciclo, ou seja, executa uma unica instru\c{c}\~{a}o por vez a cada ciclo de clock e as mesmas possuem 16 bits. Ele foi baseado na arquitetura MIPS,  uma arquitetura de microprocessadores RISC\footnote{conhecida tamb\'{e}m como \textbf{Computador com um conjunto reduzido de instru\c{c}\~{o}es} (\textit{Reduced Instruction Set Computer}), executa um conjunto simples e pequeno de instru\c{c}\~{o}es que levam aproximadamente a mesma quantidade de tempo para serem executadas.} desenvolvida pela MIPS Computer Systems\footnote{Atualmente conhecida como MIPS Technologies, é uma das mais conhecidas desenvolvedoras da arquitetura MIPS e uma pioneira no desenvolvimento das CPUs RISC.}.
+		\subsection{Plataforma de Desenvolvimento}
+		\tab Toda a descri\c{c}\~{a}o de Hardware foi feita utilizando a linguagem VHDL(\textit{VHSIC\footnote{\textit{Very High Speed Integrated Circuits.}} Hardware Description Language}) que \'{e} usada para facilitar o design (projeto e concep\c{c}\~{a}o) de circuitos digitais.\\
+		\tab A IDE utilizada foi a Quartus Prime Lite Edition vers\~{a}o 16.1.0 Build 196 fazendo uma simula\c{c}\~{a}o do dispositivo 5CGTFD9E5F35C7 da fam\'{i}lia Cyclone V. A figura \ref{fig:quartus_specifications} mostra as especifica\c{c}\~{o}es do projeto.
+			\begin{figure}[H]
+				\centering
+				\caption[Especifica\c{c}\~{o}es do projeto]{Especifica\c{c}\~{o}es do projeto gerado no Quartus}
+				\label{fig:quartus_specifications}
+				\includegraphics[height=7cm]{images/quartus_specifications.png}
+			\end{figure}
+		\subsection{Conjunto de Instru\c{c}\~{o}es}
+			\label{subsec:ConjuntoDeInstruções}
+			\tab O Processador Holocron Battle Droid 16 bits possui instru\c{c}\~{o}es do tipo R e J. O seu banco de registradores possui 16 registradores, s\~{a}o eles chamados \$zero, \$high, \$low, \$bool, \$s0, \$s1, \$s2, \$s3, \$s4, \$s5, \$s6, \$s7, \$t0, \$t1, \$t2 e \$t3. A seguir falarei sobre cada tipo de instru\c{c}\~{a}o.
+			\subsubsection{Instru\c{c}\~{o}es do tipo R}
+				\tab Abrange instru\c{c}\~{o}es de carregamento e grava\c{c}\~{a}o de dados na mem\'{o}ria prim\'{a}ria e instru\c{c}\~{o}es baseadas em opera\c{c}\~{o}es aritm\'{e}ticas, a divis\~{a}o de bits est\'{a} descrita na tabela \ref{tab:R_type_instructions_format} abaixo.
+				\begin{table}[H]
+					\centering
+					\caption[Instru\c{c}\~{o}es do tipo R]{Formato das instru\c{c}\~{o}es do tipo R}
+					\label{tab:R_type_instructions_format}
+					\begin{tabular}{c c c c}			
+						\textbf{Opcode} & \textbf{Registrador 1} & \textbf{Registrador 2}  & \textbf{Funct} \\ 	
+						15-11 & 10-7 & 6-3 & 2-0 \\
+						5 bits & 4 bits & 4 bits & 3 bits\\
+					\end{tabular}
+				\end{table}
+			\subsubsection{Instru\c{c}\~{o}es do tipo J}
+				\tab Abrange instru\c{c}\~{o}es onde \'{e} necess\'{a}rio fazer um salto condicional ou n\~{a}o entre os endere\c{c}os, como um \textit{if} ou um \textit{goTo}, por exemplo. A divis\~{a}o de bits segue abaixo na tabela \ref{tab:J_type_instructions_format}.
+				\begin{table}[H]
+					\centering
+					\caption[Instru\c{c}\~{o}es do tipo J]{Formato das instru\c{c}\~{o}es do tipo J}
+					\label{tab:J_type_instructions_format}
+					\begin{tabular}{c c}
+						\textbf{Opcode} & \textbf{Endere\c{c}o} \\ 	
+						15-11 & 10-0 \\
+						5 bits & 11 bits\\
+					\end{tabular}
+				\end{table}
+			\subsubsection{Instru\c{c}\~{o}es do tipo I}
+				\tab Devido \`{a} escassez de bits (16 apenas) em cada instru\c{c}\~{a}o, o processador Holocron Battle Droid 16 bits n\~{a}o conta com instru\c{c}\~{o}es do tipo I da maneira convencional como no MIPS. Os desvios condicionais foram divididos em duas partes: Faz-se a verifica\c{c}\~{a}o da condi\c{c}\~{a}o que determinar\'{a} se o salto ser\'{a} realizado ou n\~{a}o, o resultado \'{e} guardado no registrador \$bool, que \'{e} um registrador especial para guardar resultados de compara\c{c}\~{o}es l\'{o}gicas, em seguida, usa-se uma instru\c{c}\~{a}o do tipo J que recebe o endere\c{c}o almejado (como mostrado na tabela \ref{tab:J_type_instructions_format}) para saltar condicionalmente. A instru\c{c}\~{a}o definir\'{a} em quais condi\c{c}\~{o}es o registrador \$bool dever\'{a} estar para que o salto seja efetuado, se ele deve ser \textit{True} ou \textit{False}.
+			\subsubsection{Vis\~{a}o geral das instru\c{c}\~{o}es}
+				\tab O c\'{o}digo de opera\c{c}\~{a}o de cada instru\c{c}\~{a}o (\textit{Opcode}) \'{e} igual a 5 bits, logo obtemos um total de 32 opcodes ($2^{5} = 32$) e o campo de modifica\c{c}\~{a}o de fun\c{c}\~{a}o (\textit{Funct}) funciona \'{e} composto por 3 bits, paracada Opcode existem 8 Funct's ($2^{3} = 8$). Em outras palavras, existem 256 possibilidades de opera\c{c}\~{o}es diferentes ($2^{3} * 2^{5} = 2^{8} = 256$).\\
+				\tab O Holocron Battle Droid 16 bits, entretanto, n\~{a}o implementa todas essas possibilidades, as fun\c{c}\~{o}es dispon\'{i}veis est\~{a}o dispostas na tabela \ref{tab:opcodes_and_functs} abaixo:
+				\begin{longtable}{c c c c l}
+					\caption[Todos os Opcodes utilizados]{Todos os Opcodes implementados pelo Holocron Battle Droid 16 bits}\\
+					\label{tab:opcodes_and_functs}
+					\textbf{Opcode} & \textbf{Funct} & \textbf{Nome} & \textbf{Formato} & \textbf{Breve descri\c{c}\~{a}o} 
+					\endfirsthead
+					\textbf{Opcode} & \textbf{Funct} & \textbf{Nome} & \textbf{Formato} & \textbf{Breve descri\c{c}\~{a}o}  
+					\endhead
+					\multicolumn{5}{r}{{\textbf{Continua na pr\'{o}xima p\'{a}gina...}}} \\
+					\endfoot
+					\multicolumn{5}{r}{{}} \\
+					\endlastfoot
+					00000 &	**0 & ADD 	& 	R &	Soma\\
+					00000 &	**1 & SUB 	&	R &	Subtra\c{c}\~{a}o\\
+					00001 &	**0 & ADDI	&	R &	Soma imediata\\
+					00001 &	**1 & SUBI 	&	R &	Subtra\c{c}\~{a}o imediata\\
+					00010 &	*00 & AND 	&	R &	AND l\'{o}gico\\
+					00010 &	*10 & ANDI 	&	R &	AND l\'{o}gico imediato\\
+					00010 &	*01 & NAND 	&	R &	NAND l\'{o}gico\\
+					00010 &	*11 & NANDI &	R &	NAND l\'{o}gico imediato\\
+					00011 &	*00 & OR 	&	R &	OR l\'{o}gico\\
+					00011 &	*10 & ORI	&	R &	OR l\'{o}gico imediato\\
+					00011 &	*01 & NOR 	&	R &	NOR l\'{o}gico\\
+					00011 &	*11 & NORI 	&	R &	NOR l\'{o}gico imediato\\
+					00100 &	*00 & XOR 	&	R &	XOR l\'{o}gico\\
+					00100 &	*10 & XORI 	&	R &	XOR l\'{o}gico imediato\\
+					00100 &	*01 & XNOR 	&	R &	XNOR l\'{o}gico\\
+					00100 &	*11 & XNORI	&	R &	XNOR l\'{o}gico imediato\\
+					00101 &	*** & SRA 	&	R &	Shift Aritm\'{e}tico pra direita\\
+					00110 &	*** & SRL 	&	R &	Shift L\'{o}gico pra direita\\
+					00111 &	*** & SLLA 	&	R &	Shift para esquerda\\
+					01000 &	**0 & EQU 	&	R &	Comparador igual\\
+					01000 &	**1 & EQUI 	&	R &	Comparador igual imediato\\
+					01001 &	**0 & DIF 	&	R &	Comparador diferente \\
+					01001 &	**1 & DIFI 	&	R &	Comparador diferente imediato\\
+					01010 &	**0 & SMA 	&	R &	Comparador menor que\\
+					01010 &	**1 & SMAI 	&	R &	Comparador menor que imediato\\
+					01011 &	**0 & SMEQ 	&	R &	Comparador menor que ou igual a\\
+					01011 &	**1 & SMEQI	&	R &	Comparador menor que ou igual a imediato\\
+					01100 &	**0 & GRT 	&	R &	Comparador maior que\\
+					01100 &	**1 & GRTI 	&	R &	Comparador maior que imediato\\
+					01101 &	**0 & GREQ 	&	R &	Comparador maior que ou igual a\\
+					01101 &	**1 & GREQI	&	R &	Comparador maior que ou igual a imediato\\
+					01110 &	**0 & MULT 	&	R &	Multiplica\c{c}\~{a}o\\
+					01110 &	**1 & MULTI	&	R &	Multiplica\c{c}\~{a}o imediata\\
+					01111 &	**0 & DIV 	&	R &	Divis\~{a}o\\
+					01111 &	**1 & DIVI 	&	R &	Divis\~{a}o imediata\\
+					10000 &	*** & JR 	&	I &	Salto para endere\c{c}o no registrador\\
+					10001 &	*** & JIM 	&	I &	Salto para endere\c{c}o imediato\\
+					10010 &	*** & JRBT 	&	I &	Salto para endere\c{c}o no registrador se \$bool = \textit{True}\\
+					10011 &	*** & JRBF 	&	I &	Salto para endere\c{c}o no registrador se\$bool = \textit{False}\\
+					10100 &	*** & JIMBT	&	I &	Salto para endere\c{c}o imediato se \$bool = \textit{True}\\
+					10101 &	*** & JIMBF	&	I &	Salto para endere\c{c}o imediato se \$bool = \textit{False}\\
+					10110 &	*** & LDR 	&	R &	Carrega um dado do endere\c{c}o no registrador\\
+					10111 &	*** & LDI 	&	R &	Carrega um dado do endere\c{c}o imediato\\
+					11000 &	*** & STR 	&	R &	Grava um dado no endere\c{c}o no registrador\\
+					11001 &	*** & STI 	&	R &	Grava um dado no endere\c{c}o imediado\\
+					11010 & **0 & MOVE  &	R & Move um dado para o registrador\\
+					11010 & **1 & MOVI  &	R & Move um dado imediato para o registrador\\
+				\end{longtable}
+		\subsection{Descri\c{c}\~{a}o do Hardware}
+			\tab O processador Holocron Battle Droid 16 bits possui 27 componentes diferentes descritos em Hardware. Segue a descri\c{c}\~{a}o de cada um.
+			\subsubsection{Portas l\'{o}gicas AND, OR e XOR}
+			\tab Foram implementadas as portas l\'{o}gicas simples AND, OR e XOR adaptadas para entradas de 16 bits. Todas t\^{e}m a descri\c{c}\~{a}o muito parecida, por esta raz\~{a}o a figura \ref{fig:LogicalAND_2x16} mostra apenas a descri\c{c}\~{a}o da porta AND, o que difere uma da outra s\~{a}o o nome do componente e, obviamente, a implementa\c{c}\~{a}o do comportamento das mesmas. A visualiza\c{c}\~{a}o, gerada automaticamente pelo Quartus, est\'{a} na figura \ref{fig:Logicalgates_x16_RTL}, respectivamente: AND, OR e XOR.
+			\begin{figure}[H]
+				\centering
+				\caption[Portas l\'{o}gicas]{Declara\c{c}\~{a}o da porta l\'{o}gica AND}
+				\label{fig:LogicalAND_2x16}
+				\begin{lstlisting}[style=vhdl]
+entity LogicalAND_2x16 is
+	port( 
+		input_A, 
+		input_B : in  std_logic_vector(15 downto 0);
+		output  : out std_logic_vector(15 downto 0)
+	);
+end LogicalAND_2x16;
+				\end{lstlisting}
+			\end{figure}
+			\begin{itemize}
+				\item \textbf{input\_A} e \textbf{input\_A}- Sinais de entrada em 16 bits.
+				\item \textbf{output} - Sinal de saida ap\'{o}s a compara\c{c}\~{a}o bit a bit.
+			\end{itemize}
+			\begin{figure}[H]
+				\centering
+				\caption[Vizualiza\c{c}\~{a}o das portas l\'{o}gicas]{Vizualiza\c{c}\~{a}o das portas l\'{o}gicas AND, OR e XOR\\}
+				\label{fig:Logicalgates_x16_RTL}
+				\includegraphics[height=12cm]{images/Logicalgates_x16_RTL.png}
+			\end{figure}
+			\subsubsection{Encurtador de Sinal}
+			\tab Este encurtador de sinal foi implementado especificamente para verifica\c{c}\~{a}o de resultados l\'{o}gicos, ele checa a exist\^{e}ncia de, pelo menos, um bit 1 para que a saida seja 1, caso contr\'{a}rio a saida \'{e} 0. Ele est\'{a} descrito como mostra a figura \ref{fig:SignalShorter_16x1}.
+			\begin{figure}[H]
+				\centering
+				\caption[Encurtador de sinal de 16 para 1 bit]{Declara\c{c}\~{a}o de um encurtador de sinal de 16 para 1 bit}
+				\label{fig:SignalShorter_16x1}
+				\begin{lstlisting}[style=vhdl]
+entity SignalShorter_16x1 is
+	port(
+		input  : in  std_logic_vector(15 downto 0);
+		output : out std_logic
+	);
+end SignalShorter_16x1;
+				\end{lstlisting}
+			\end{figure}
+				\begin{itemize}
+					\item \textbf{input} - Sinal de entrada em 16 bits.
+					\item \textbf{output} - Sinal de saida em 1 bit.
+				\end{itemize}
+			\subsubsection{Alongadores de Sinal}
+				\tab Existem dois alongadores de sinal, um que recebe 4 bits e outro que recebe 11 bits, ambos transformam essa entrada em uma saida de 16 bits. O alongador de 4 para 16 bits preenche os bits extras com 0's, j\'{a} o de 11 para 16 bits, replica o bit menos significativo nas posi\c{c}\~{o}es subsequentes. A declara\c{c}\~{a}o desses alongadores \'{e} mostrada, nas figuras \ref{fig:SignalExtender_4x16} e \ref{fig:SignalExtender_11x16}.
+				\begin{figure}[H]
+					\centering
+					\caption[Alongador de sinal de 4 para 16 bits]{Declara\c{c}\~{a}o de um alongador de sinal de 4 para 16 bits}
+					\label{fig:SignalExtender_4x16}
+					\begin{lstlisting}[style=vhdl]
+entity SignalExtender_4x16 is
+	port(
+		input  : in  std_logic_vector(3 downto 0);
+		output : out std_logic_vector(15 downto 0)
+	);
+end SignalExtender_4x16
+					\end{lstlisting}
+				\end{figure}
+				\begin{figure}[H]
+				\centering
+				\caption[Alongador de sinal de 11 para 16 bits]{Declara\c{c}\~{a}o de um alongador de sinal de 11 para 16 bits}
+				\label{fig:SignalExtender_11x16}
+					\begin{lstlisting}[style=vhdl]
+entity SignalExtender_11x16 is
+	port(
+		input  : in  std_logic_vector(10 downto 0);
+		output : out std_logic_vector(15 downto 0)
+	);
+end SignalExtender_11x16
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{input} - Sinal de entrada em 4 / 11 bits.
+					\item \textbf{output} - Sinal de saida em 16 bits.
+				\end{itemize}
+			\subsubsection{Multiplexadores}
+				\tab Durante  a constru\c{c}\~{a}o do Holocron Battle Droid 16 bits foram utilizados 5 tipos de multiplexadores. A declara\c{c}\~{a}o, bem como a descrição dos pinos de entrada e saida, seguem nas figuras \ref{fig:Multiplexer_2x1}, \ref{fig:Multiplexer_1x4}, \ref{fig:Multiplexer_1x16}, \ref{fig:Multiplexer_3x16} e \ref{fig:Multiplexer_4x16}.
+				
+				\begin{figure}[H]
+					\centering
+					\caption[Mutiplexador com 2 bits de sele\c{c}\~{a}o para 1 bit]{Declara\c{c}\~{a}o de um mutiplexador com 2 bits de sele\c{c}\~{a}o para 1 bit}
+					\label{fig:Multiplexer_2x1}
+					\begin{lstlisting}[style=vhdl]
+entity Multiplexer_2x1 is
+	port(
+		selector : in  std_logic_vector(1 downto 0);
+		input_A,
+		input_B,
+		input_C,
+		input_D  : in  std_logic;
+		output   : out std_logic
+	);
+end Multiplexer_2x1;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida, um valor entre 00 e 11 que define qual das entradas ser\'{a} a saida.
+					\item \textbf{input\_A} a \textbf{input\_D} - Entradas de dados de 1 bit.
+					\item \textbf{output} - Sinal de saida contendo o valor de uma das entradas de acordo com o \textbf{selector}.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Mutiplexador com 1 bit de sele\c{c}\~{a}o para 4 bits]{Declara\c{c}\~{a}o de um mutiplexador com 1 bit de sele\c{c}\~{a}o para 4 bits}
+					\label{fig:Multiplexer_1x4}
+					\begin{lstlisting}[style=vhdl]
+entity Multiplexer_1x4 is
+	port(
+		selector : in  std_logic;
+		input_A,
+		input_B  : in  std_logic_vector(3 downto 0);
+		output   : out std_logic_vector(3 downto 0)
+	);
+end Multiplexer_1x4;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida que define qual das entradas ser\'{a} a saida.
+					\item \textbf{input\_A} e \textbf{input\_B} - Entradas de dados de 4 bits.
+					\item \textbf{output} - Sinal de saida contendo o valor de uma das entradas de acordo com o \textbf{selector}.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Mutiplexador com 1 bit de sele\c{c}\~{a}o para 16 bits]{Declara\c{c}\~{a}o de um mutiplexador com 1 bit de sele\c{c}\~{a}o para 16 bits}
+					\label{fig:Multiplexer_1x16}
+					\begin{lstlisting}[style=vhdl]
+entity Multiplexer_1x16 is
+	port(
+		selector : in  std_logic;
+		input_A,
+		input_B  : in  std_logic_vector(15 downto 0);
+		output   : out std_logic_vector(15 downto 0)
+	);
+end Multiplexer_1x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida que define qual das entradas ser\'{a} a saida.
+					\item \textbf{input\_A} e \textbf{input\_B} - Entradas de dados de 16 bits.
+					\item \textbf{output} - Sinal de saida contendo o valor de uma das entradas de acordo com o\textbf{selector}.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Mutiplexador com 3 bits de sele\c{c}\~{a}o para 16 bits]{Declara\c{c}\~{a}o de um mutiplexador com 3 bits de sele\c{c}\~{a}o para 16 bits}
+					\label{fig:Multiplexer_3x16}
+					\begin{lstlisting}[style=vhdl]
+entity Multiplexer_3x16 is
+	port(
+		selector : in  std_logic_vector(2 downto 0);
+		input_A, input_B, input_C, input_D,
+		input_E, input_F, input_G, input_H  : in  std_logic_vector(15 downto 0);
+		output   : out std_logic_vector(15 downto 0)
+	);
+end Multiplexer_3x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida, com valores de 000 a 111, que define qual das entradas ser\'{a} a saida.
+					\item \textbf{input\_A} a \textbf{input\_H} - Entradas de dados de 16 bits.
+					\item \textbf{output} - Sinal de saida contendo o valor de uma das entradas de acordo com o\textbf{selector}.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Mutiplexador com 4 bits de sele\c{c}\~{a}o para 16 bits]{Declara\c{c}\~{a}o de um mutiplexador com 4 bits de sele\c{c}\~{a}o para 16 bits}
+					\label{fig:Multiplexer_4x16}
+					\begin{lstlisting}[style=vhdl]
+entity Multiplexer_4x16 is
+	port(
+		selector : in  std_logic_vector(3 downto 0);
+		input_A, input_B, input_C, input_D, 
+		input_E, input_F, input_G, input_H,
+		input_I, input_J, input_K, input_L, 
+		input_M, input_N, input_O, input_P: in  std_logic_vector(15 downto 0);
+		output   : out std_logic_vector(15 downto 0)
+	);
+end Multiplexer_4x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida, com valores de 0000 a 1111, que define qual das entradas ser\'{a} a saida.
+					\item \textbf{input\_A} a \textbf{input\_P} - Entradas de dados de 16 bits.
+					\item \textbf{output} - Sinal de saida contendo o valor de uma das entradas de acordo com o\textbf{selector}.
+				\end{itemize}
+			\subsubsection[Demultiplexadores]{Demultiplexadores} 
+				\tab Os demultiplexadores usados est\~{a}o descritos nas figuras \ref{fig:Demultiplexer_4x1} e \ref{fig:Demultiplexer_4x16}.
+				\begin{figure}[H]
+					\centering
+					\caption[Demultiplexador com 4 bits de sele\c{c}\~{a}o para 1 bit]{Declara\c{c}\~{a}o de um demultiplexador com 4 bits de sele\c{c}\~{a}o para 1 bit}
+					\label{fig:Demultiplexer_4x1}
+					\begin{lstlisting}[style=vhdl]
+entity Demultiplexer_4x1 is
+	port(
+		selector : in  std_logic_vector(3 downto 0);
+		input	 : in  std_logic;
+		output_A, output_B, output_C, output_D,
+		output_E, output_F, output_G, output_H,
+		output_I, output_J, output_K, output_L, 
+		output_M, output_N, output_O, output_P   : out std_logic
+	);
+end Demultiplexer_4x1;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida, com valores de 0000 a 1111, que define para qual saida ir'{a} o valor de entrada.
+					\item \textbf{input} - Sinal de entrada em 1 bit.
+					\item \textbf{output\_A} a \textbf{output\_P} - Saidas de 1 bit. A saida que corresponde ao codigo recebido em \textbf{selector} recebe o valor contido em \textbf{input}, enquanto as outras recebem 0 por padr\~{a}o.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Demultiplexador com 4 bits de sele\c{c}\~{a}o para 16 bits]{Declara\c{c}\~{a}o de um demultiplexador com 4 bits de sele\c{c}\~{a}o para 16 bits}
+					\label{fig:Demultiplexer_4x16}
+					\begin{lstlisting}[style=vhdl]
+entity Demultiplexer_4x16 is
+	port(
+		selector : in  std_logic_vector( 3 downto 0);
+		input	 : in  std_logic_vector(15 downto 0);
+		output_A, output_B, output_C, output_D,
+		output_E, output_F, output_G, output_H,
+		output_I, output_J, output_K, output_L, 
+		output_M, output_N, output_O, output_P	: out std_logic_vector(15 downto 0)
+	);
+end Demultiplexer_4x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{selector} - Seletor de saida, com valores de 0000 a 1111, que define para qual saida ir\'{a} o valor de entrada.
+					\item \textbf{input} - Sinal de entrada em 16 bits.
+					\item \textbf{output\_A} a \textbf{output\_P} - Saidas de 16 bits. A saida que corresponde ao codigo recebido em \textbf{selector} recebe o valor contido em \textbf{input}, enquanto as outras recebem 0 por padr\~{a}o.
+				\end{itemize}
+			
+			\subsubsection[Deslocador para esquerda]{Deslocador de bit para esquerda}
+				\tab Como o nome do componente entrega, o componente desloca 1 bit para a esquerda adicionando um 0. Ele est\'{a} descrito na figura \ref{fig:ArithmeticalLogicalLeftShifter_x16}.
+				\begin{figure}[H]
+					\centering
+					\caption[Deslocador de bit para esquerda]{Declara\c{c}\~{a}o de um deslocador de bit para esquerda}
+					\label{fig:ArithmeticalLogicalLeftShifter_x16}
+					\begin{lstlisting}[style=vhdl]
+entity ArithmeticalLogicalLeftShifter_x16 is
+	port(
+		input  : in  std_logic_vector(15 downto 0);
+		output : out std_logic_vector(15 downto 0)
+	);
+end ArithmeticalLogicalLeftShifter_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{input} - Sinal de entrada em 16 bits.
+					\item \textbf{output} - Saida deslocada 1 bit para a esquerda.
+				\end{itemize}
+			\subsubsection[Deslocadores para direita]{Deslocadores de bit para direita}
+				\tab O processador Holocron Battle Droid 16 bits usa 2 deslocadores de bit para direita: Um l\'{o}gico e um Aritm\'{e}tico. A principal diferenca entre eles \'{e} que o l\'{o}gico, ao deslocar o bit paraa direita, p\~{o}e sempre um 0 no lugar, enquanto o Aritm\'{e}tico duplica o ultimo bit. Ambos est\~{a}o descritos na figuras \ref{fig:LogicalRightShifter_x16} e \ref{fig:ArithmeticalRightShifter_x16} respectivamente.
+				\begin{figure}[H]
+					\centering
+					\caption[Deslocador l\'{o}gico de bit para direita]{Declara\c{c}\~{a}o de um deslocador l\'{o}gico de bit para direita}
+					\label{fig:LogicalRightShifter_x16}
+					\begin{lstlisting}[style=vhdl]
+entity LogicalRightShifter_x16 is
+	port(
+		input  : in  std_logic_vector(15 downto 0);
+		output : out std_logic_vector(15 downto 0)
+	);
+end LogicalRightShifter_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{input} - Sinal de entrada em 16 bits.
+					\item \textbf{output} - Saida deslocada 1 bit para a direita.
+				\end{itemize}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Deslocador aritm\'{e}tico de bit para direita]{Declara\c{c}\~{a}o de um deslocador aritm\'{e}tico de bit para direita}
+					\label{fig:ArithmeticalRightShifter_x16}	
+					\begin{lstlisting}[style=vhdl]
+entity ArithmeticalRightShifter_x16 is
+	port(
+		input  : in  std_logic_vector(15 downto 0);
+		output : out std_logic_vector(15 downto 0)
+	);
+end ArithmeticalRightShifter_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{input} - Sinal de entrada em 16 bits.
+					\item \textbf{output} - Saida deslocada 1 bit para a direita.
+				\end{itemize}
+			\subsubsection[Comparador aritm\'{e}tico]{Comparador Aritm\'{e}tico}
+				\tab O comparador est\'{a} descrito na figura \ref{fig:ArithmeticalComparator_x16}. Nele \'{e} poss\'{i}vel realizar 6 opera\c{c}\~{o}es, s\~{a}o elas: Igual, diferente, menor que, menor que ou igual, maior que, maior que ou igual. O resultado das compara\c{c}\~{o}es \'{e} sempre uma sequ\^{e}ncia com 16 0's ou 16 1's.
+				\begin{figure}[H]
+					\centering
+					\caption[Comparador Aritm\'{e}tico]{Declara\c{c}\~{a}o de um comparador Aritm\'{e}tico}
+					\label{fig:ArithmeticalComparator_x16}
+					\begin{lstlisting}[style=vhdl]
+entity ArithmeticalComparator_x16 is
+	port(
+		opcodeComp  : in  std_logic_vector(2 downto 0);
+		input_A,
+		input_B 	: in  std_logic_vector(15 downto 0);
+		output 		: out std_logic_vector(15 downto 0)
+	);
+end ArithmeticalComparator_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{opcodeComp} - C\'{o}digo que decide qual opera\c{c}\~{a}o ser\'{a} realizada pelo comparador.
+					\item \textbf{input\_A} e \textbf{input\_B} - Valores para serem comparados.
+					\item \textbf{output} - Resultado da compara\c{c}\~{a}o.
+				\end{itemize}
+				\tab A vizualiza\c{c}\~{a}o simb\'{o}lica, gerada pelo Quartus, \'{e} mostrada na figura \ref{fig:ArithmeticalComparator_x16_RTL}. \'{E} poss\'{i}vel ver um multiplexador com 3 bits de sele\c{c}\~{a}o para 16 bits, o mesmo foi previamente descrito na figura \ref{fig:Multiplexer_3x16}.
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o do comparador]{Vizualiza\c{c}\~{a}o do comparador gerada automaticamente pelo Quartus}
+					\label{fig:ArithmeticalComparator_x16_RTL}
+					\includegraphics[height=5cm]{images/ArithmeticalComparator_x16_RTL.png}
+				\end{figure}
+			\subsubsection[Somador]{Somador Aritm\'{e}tico}
+				\tab O somador est\'{a} descrito na figura \ref{fig:Adder_2x16}. N\~{a}o possui nada de incomum, \'{e} apenas um somador simples.
+				\begin{figure}[H]
+					\centering
+					\caption[Somador]{Declara\c{c}\~{a}o de um somador aritm\'{e}tico}
+					\label{fig:Adder_2x16}
+					\begin{lstlisting}[style=vhdl]
+entity Adder_2x16 is 
+	port (
+		isSubtraction	 : in  std_logic;
+		input_A, input_B : in  std_logic_vector(15 downto 0);
+		carry_out		 : out std_logic;
+		output			 : out std_logic_vector(15 downto 0)
+	);
+end Adder_2x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{isSubtraction} - Modificador que indica se os valores ser\~{a}o somados ou subtra\'{i}dos, no caso da subtra\c{c}\~{a}o o valor de \textbf{input\_B} \'{e} negado e somado \`{a} \textbf{input\_A} com 1 (complemento de 2).
+					\item \textbf{input\_A} e \textbf{input\_B} - Valores a serem somados.
+					\item \textbf{carry\_out} - Indicador de \textit{Overflow}.
+					\item \textbf{output} - Resultado da soma.
+				\end{itemize}
+				\tab A vizualiza\c{c}\~{a}o, gerada pelo Quartus, \'{e} mostrada na figura \ref{fig:Adder_2x16_RTL}.
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o do somador]{Vizualiza\c{c}\~{a}o do somador gerada automaticamente pelo Quartus}
+					\label{fig:Adder_2x16_RTL}
+					\includegraphics[height=3.25cm]{images/Adder_2x16_RTL.png}
+				\end{figure}
+			\subsubsection[Multiplicador]{Multiplicador}
+				\tab Descrito na imagem \ref{fig:Multiplier_2x16}, o multiplicador foi implementado baseado no algoritmo de Booth\footnote{O algoritmo de multiplica\c{c}\~{a}o de Booth \'{e} um algoritmo de multiplica\c{c}\~{a}o para n\'{u}meros bin\'{a}rios com sinal na nota\c{c}\~{a}o complemento de dois. O algoritmo foi inventado por Andrew D. Booth em 1951 enquanto fazia pesquisas sobre Cristalografia no Col\'{e}gio Birkbeck em Bloomsbury, Londres. Booth usava calculadoras que eram mais r\'{a}pidas em deslocar do que em somar e criou o algoritmo para aumentar sua velocidade.}. A vizualiza\c{c}\~{a}o do componente \'{e} encontrada na figura \ref{fig:Multiplier_2x16_RTL}.
+				\begin{figure}[H]
+					\centering
+					\caption[Multiplicador]{Declara\c{c}\~{a}o de um multiplicador}
+					\label{fig:Multiplier_2x16}
+					\begin{lstlisting}[style=vhdl]
+entity Multiplier_2x16 is
+	port(
+		input_A, input_B 	  : in  std_logic_vector(15 downto 0);
+		outputLow, outputHigh : out std_logic_vector(15 downto 0);
+		carryOut 			  : out std_logic
+	);
+end Multiplier_12x6;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{input\_A} e \textbf{input\_B} - Valores que ser\~{a}o multiplicados.
+					\item \textbf{outputLow} e \textbf{outputHigh} - Como os operandos possuem 16 bits - cada - o resultado ser\'{a} de 32 bits, dos quais 16 mais significativos ficam armazenados no \textbf{outputLow} e os 16 restantes no \textbf{outputHigh}.
+					\item \textbf{carryOut} - Indicador de Overflow na multiplica\c{c}\~{a}o.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o do multiplicador]{Vizualiza\c{c}\~{a}o do multiplicador utilizando o Algoritmo de Booth}
+					\label{fig:Multiplier_2x16_RTL}
+					\includegraphics[height=3.25cm]{images/Multiplier_2x16_RTL.png}
+				\end{figure}
+			
+			\subsubsection[Divisor]{Divisor}
+			\tab Descrito na figura \ref{fig:Divider_2x16}, o divisor foi implementado baseado no algoritmo de divis\~{a}o longa\footnote{Na aritm\'{e}tica, a divis\~{a}o longa \'{e} um algoritmo de divis\~{a}o padr\~{a}o adequado para dividir n\'{u}meros de v\'{a}rios d\'{i}gitos que \'{e} simples o bastante para ser executado manualmente. Ele divide um problema de divis\~{a}o em uma s\'{e}rie de passos mais f\'{a}ceis}. A vizualiza\c{c}\~{a}o do componente \'{e} encontrada na figura \ref{fig:Divider_2x16_RTL}.
+			\begin{figure}[H]
+				\centering
+				\caption[Divisor]{Declara\c{c}\~{a}o de um divisor}
+				\label{fig:Divider_2x16}
+				\begin{lstlisting}[style=vhdl]
+entity Divider_2x16 is
+	port(
+		input_A, input_B 		: in  std_logic_vector(15 downto 0);
+		outputLow, outputHigh 	: out std_logic_vector(15 downto 0);
+		carryOut 				: out std_logic
+	);
+end Divider_2x16;
+				\end{lstlisting}
+			\end{figure}
+			\begin{itemize}
+				\item \textbf{input\_A} - Valor do dividendo.
+				\item \textbf{input\_B} - Valor do divisor.
+				\item \textbf{outputLow} - Resultado da divis\~{a}o inteira.
+				\item \textbf{outputHigh} - Resto da divis\~{a}o.
+				\item \textbf{carryOut} - Indicador de Overflow.
+			\end{itemize}
+			\begin{figure}[H]
+				\centering
+				\caption[Vizualiza\c{c}\~{a}o do divisor]{Vizualiza\c{c}\~{a}o do divisor utilizando o algoritmo de divis\~{a}o longa}
+				\label{fig:divider_2x16_RTL.png}
+				\includegraphics[width=16cm]{images/divider_2x16_RTL.png}
+			\end{figure}
+			\subsubsection[ULA]{Unidade L\'{o}gica e Aritm\'{e}tica - ULA}
+				\tab A Unidade L\'{o}gica e Aritm\'{e}tica (ULA) desenvolvida est\'{a} descrita na figura \ref{fig:ALU_x16} e conta com 20 opera\c{c}\~{o}es aritm\'{e}ticas, todas est\~{a}o listadas na tabela \ref{tab:ula_operations}.
+				\begin{figure}[H]
+					\centering
+					\caption[ULA]{Declara\c{c}\~{a}o da Unidade L\'{o}gica e Aritm\'{e}tica}
+					\label{fig:ALU_x16}
+					\begin{lstlisting}[style=vhdl]
+entity ALU_x16 is 
+	port(
+		opcode 			 : in  std_logic_vector(3 downto 0);
+		negate 			 : in  std_logic;
+		input_A, input_B : in  std_logic_vector(15 downto 0);
+		output, 
+		overflowMultDiv  : out std_logic_vector(15 downto 0)
+	);	
+end ALU_x16;
+					\end{lstlisting}
+					\begin{itemize}
+						\item \textbf{opcode} - seletor de opera\c{c}\~{a}o.
+						\item \textbf{negate} - Trabalha em conjunto com o \textbf{opcode}, indica se o resultado dever\'{a}  ser negado: AND, OR, XOR ou NAND, NOR e XNOR, por exemplo.
+						\item \textbf{input\_A} e \textbf{input\_B} - Operandos.
+						\item \textbf{output} - Resultado da opera\c{c}\~{a}o aritm\'{e}tica definida por \textbf{opcode}.
+						\item \textbf{overflowMultDiv} - 16 bits extras quando a opera\c{c}\~{a}o \'{e}, por exemplo, a multiplica\c{c}\~{a}o ou a divis\~{a}o.
+					\end{itemize}
+				\end{figure}
+				\begin{longtable}{c c l}
+					\caption[Opera\c{c}\~{o}es da ULA]{Todas as opera\c{c}\~{o}es aritm\'{e}ticas da ULA}\\
+					\label{tab:ula_operations}
+					\textbf{Opcode} & \textbf{Negate} & \textbf{Breve descri\c{c}\~{a}o} 
+					\endfirsthead
+					\textbf{Opcode} & \textbf{Negate} & \textbf{Breve descri\c{c}\~{a}o}  
+					\endhead
+					\multicolumn{3}{r}{{\textbf{Continua na pr\'{o}xima p\'{a}gina...}}} \\
+					\endfoot
+					\multicolumn{3}{r}{{}} \\
+					\endlastfoot
+					0000 & 0 & Soma\\
+					0000 & 1 & Subtra\c{c}\~{a}o\\
+					0001 & * & Retorna o Valor do segundo operando\\
+					0010 & 0 & AND l\'{o}gico\\
+					0010 & 1 & NAND l\'{o}gico\\
+					0011 & 0 & OR l\'{o}gico\\
+					0011 & 1 & NOR l\'{o}gico\\
+					0100 & 0 & XOR l\'{o}gico\\
+					0100 & 1 & XNOR l\'{o}gico\\
+					0101 & * & deslocamento aritm\'{e}tico de bit pra direita\\
+					0110 & * & deslocamento l\'{o}gico de bit pra direita\\
+					0111 & * & deslocamento de bit para esquerda\\
+					1000 & * & Comparador igual\\
+					1001 & * & Comparador diferente\\
+					1010 & * & Comparador menor que\\
+					1011 & * & Comparador menor que ou igual\\	
+					1100 & * & Comparador maior que\\
+					1101 & * & Comparador maior que ou igual\\	
+					1110 & * & Multiplica\c{c}\~{a}o\\
+					1111 & * & Divis\~{a}o
+				\end{longtable}
+				\tab A vizualiza\c{c}\~{a}o simb\'{o}lica da ULA est\'{a} na figura \ref{fig:ALU_2x16_RTL}, nela podemos ver que a mesma faz uso de alguns componentes descritos anteriormente, como um somador (figura \ref{fig:Adder_2x16}), deslocador de bit para esquerda (figura \ref{fig:ArithmeticalLogicalLeftShifter_x16}), deslocador l\'{o}gico de bit para direita (figura \ref{fig:LogicalRightShifter_x16}), deslocador aritm\'{e}tico de bit para direita (figura \ref{fig:ArithmeticalRightShifter_x16}), comparador aritm\'{e}tico (figura \ref{fig:ArithmeticalComparator_x16}), multiplicador (figura \ref{fig:Multiplier_2x16}), divisor (figura \ref{fig:Divider_2x16}), multiplexador de 4 bits de sele\c{c}\~{a}o para 16 bits (figura \ref{fig:Multiplexer_4x16}) e as portas l\'{o}gicas AND, OR e XOR(figura \ref{fig:LogicalAND_2x16}).
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o da ULA]{Vizualiza\c{c}\~{a}o da Unidade L\'{o}gica e Aritm\'{e}tica}
+					\label{fig:ALU_2x16_RTL}
+					\includegraphics[height=10cm]{images/ALU_x16_RTL.png}
+				\end{figure}
+			\subsubsection[Registrador D Flip-Flop]{Registrador D Flip-FLop}
+				\tab O Holocron Battle Droid 16 bits utiliza registradores flip-flop\footnote{O flip-flop ou multivibrador biest\'{a}vel \'{e} um circuito digital pulsado capaz de servir como uma mem\'{a}ria de um bit.} do tipo D (\textit{data} ou dado, pois armazena o bit de entrada) de 16 bits. O modelo de descri\c{c}\~{a}o \'{e} mostrado na figura \ref{fig:RegisterDFlipFlop_x16} e a sua vizualiza\c{c}\~{a}o na figura \ref{fig:RegisterDFlipFlop_x16_RTL}.
+				\begin{figure}[H]
+					\centering
+					\caption[Registrador D Flip-Flop]{Declara\c{c}\~{a}o de um registrador D Flip-Flop}
+					\label{fig:RegisterDFlipFlop_x16}
+					\begin{lstlisting}[style=vhdl]
+entity RegisterDFlipFlop_x16 is 
+	port (
+		clock, 
+		reset, 
+		enable	: in  std_logic;
+		input	: in  std_logic_vector(15 downto 0);
+		output	: out std_logic_vector(15 downto 0)
+	);
+end RegisterDFlipFlop_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{clock} - Sinal de clock do processador.
+					\item \textbf{reset} - Flag de limpeza do resgistrador, quando 1 o valor armazenado se torna 0's.
+					\item \textbf{enable} - Indicada se o valor contido em \textbf{input} deve ser armazenado.
+					\item \textbf{input} - Valor de entrada.
+					\item \textbf{output} - Valor armazenado no registrador.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o do registrador D Flip-Flop]{Vizualiza\c{c}\~{a}o do registrador D Flip-Flop}
+					\label{fig:RegisterDFlipFlop_x16_RTL}
+					\includegraphics[height=3cm]{images/RegisterDFlipFlop_x16_RTL.png}
+				\end{figure}
+			\subsubsection[PC]{Contador do Programa - PC}
+				\tab O Contador do Programa (PC) \'{e} apenas um registrador D Flip-Flop parecido com o da sess\~{a}o que armazena o endere\c{c}o da instru\c{c}\~{a}o atual, o que o difere \'{e} o fato do PC n\~{a}o conter \textbf{enable} e \textbf{reset}. Sua descri\c{c}\~{a}o e sua visualiza\c{c}\~{a}o seguem, respectivamente, nas figuras \ref{fig:ProgramCounterRegister_x16} e \ref{fig:ProgramCounterRegister_x16_RTL}.
+				\begin{figure}[H]
+					\centering
+					\caption[Contador do Programa]{Declara\c{c}\~{a}o do contador do Programa}
+					\label{fig:ProgramCounterRegister_x16}
+					\begin{lstlisting}[style=vhdl]
+entity ProgramCounterRegister_x16 is 
+	port(
+		clock : in  std_logic;
+		input : in  std_logic_vector(15 downto 0);
+		output: out std_logic_vector(15 downto 0)
+	);
+end ProgramCounterRegister_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{clock} - Sinal de clock do processador.
+					\item \textbf{input} - Valor de entrada.
+					\item \textbf{output} - Valor armazenado no PC.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o do contador do Programa]{Vizualiza\c{c}\~{a}o do contador do Programa}
+					\label{fig:ProgramCounterRegister_x16_RTL}
+					\includegraphics[height=2.5cm]{images/ProgramCounterRegister_x16_RTL.png}
+				\end{figure}
+			\subsubsection[Banco de registradores]{Banco de registradores}
+				\tab O banco de registradores do Holocron Battle Droid 16 bits conta com 16 registradores, como citado na sess\~{a}o \textbf{\ref{subsec:ConjuntoDeInstruções} Conjunto de Instru\c{c}\~{o}es}. Ele foi declarado com 10 pinos de entrada e 2 de saida que podem ser vistos na figura \ref{fig:RegisterBank_4x16} abaixo:
+			\begin{figure}[H]
+				\centering
+				\caption[Banco de registradores]{Declara\c{c}\~{a}o do banco de registradores}
+				\label{fig:RegisterBank_4x16}
+				\begin{lstlisting}[style=vhdl]
+entity RegisterBank_4x16 is 
+	port(
+		clock, clear, writeRegister1, writeRegister2: in  std_logic;
+		registerAddress1, registerAddress2, 
+		register1Read, register1Write				: in  std_logic_vector(3 downto 0);
+		inputedDataR1, inputedDataR2 				: in  std_logic_vector(15 downto 0);
+		readData1, readData2						: out std_logic_vector(15 downto 0)
+	);
+end RegisterBank_4x16;
+				\end{lstlisting}
+			\end{figure}
+			\begin{itemize}
+				\item \textbf{clock} - Sinal de clock do processador.
+				\item \textbf{clear} - Flag que indica que o conte\'{u}do do registrador acessado ser\'{a} 0.
+				\item \textbf{writeRegister1} - Flag para indicar que o valor em \textbf{inputedDataR1} ser\'{a} armazenado no registrador \textbf{register1Write}.
+				\item \textbf{writeRegister2} - Flag para indicar que o valor em \textbf{inputedDataR2} ser\'{a} armazenado no registrador \$high.
+				\item \textbf{registerAddress1} - Endere\c{c}o do registrador 1.
+				\item \textbf{registerAddress2} - Endere\c{c}o do registrador 2.
+				\item \textbf{register1Read} - Confirma\c{c}\~{a}o do endere\c{c}o do registrador 1 para leitura. \textbf{readData1} assume o valor armazenado nesse endere\c{c}o, quando esse valor \'{e} 0000, \textbf{readData1} assume o valor armazenado em \textbf{registerAddress1}.
+				\item \textbf{register1Write} - Confirma\c{c}\~{a}o do endere\c{c}o do registrador 1 para escrita. \textbf{inputedDataR1} \'{e} armazenado nesse endere\c{c}o, quando esse valor \'{e} 0000, \textbf{inputedDataR1} \'{e} armazenado em \textbf{registerAddress1}.
+				\item \textbf{inputedDataR1} - Dado de entrada para o registrador 1.
+				\item \textbf{inputedDataR2} - Dado de entrada para o registrador 2.
+				\item \textbf{readData1} - Valor lido do registrador 1.
+				\item \textbf{readData2} - Valor lido do registrador 2.
+			\end{itemize}
+				\tab \'{E}, provavelmente, o componente mais complexo do processador Holocron Battle Droid 16 bits. Ele \'{e} composto por 9 componentes diferentes, s\~{a}o eles: 3 extensores de sinal de 4 para 16 bits (figura \ref{fig:SignalExtender_4x16}), 3 comparadores aritm\'{e}ticos (figura \ref{fig:ArithmeticalComparator_x16}), 3 encurtadores de sinal de 16 para 1 bit (figura \ref{fig:SignalShorter_16x1}), 2 multiplexadores com 4 bits de sele\c{c}\~{a}o para 16 bits (figura \ref{fig:Multiplexer_4x16}), 2 multiplexadores com 1 bit de sele\c{c}\~{a}o para 4 bits (figura \ref{fig:Multiplexer_1x4}), 2 multiplexadores com 1 bit de sele\c{c}\~{a}o para 16 bits (figura \ref{fig:Multiplexer_1x16}), 1 demultiplexador com 4 bits de sele\c{c}\~{a}o para 16 bits (figura \ref{fig:Demultiplexer_4x16}), 1 demultiplexador com 4 bits de sele\c{c}\~{a}o para 1 bit (figura \ref{fig:Demultiplexer_4x1}), 16 registradores do tipo D Flip-Flop (figura \ref{fig:RegisterDFlipFlop_x16}) e uma porta OR simples de 1 bit. Totalizando 34 componentes que podem ser vistos na figura \ref{fig:RegisterBank_4x16_RTL} abaixo.			
+			\begin{figure}[H]
+				\centering
+				\caption[Vizualiza\c{c}\~{a}o do banco de registradores]{Vizualiza\c{c}\~{a}o do banco de registradores}
+				\label{fig:RegisterBank_4x16_RTL}
+				\includegraphics[width=16cm]{images/RegisterBank_4x16_RTL.png}
+			\end{figure}
+			\subsubsection[Mem\'{o}ria de instru\c{c}\~{o}es]{Mem\'{o}ria de instru\c{c}\~{o}es}
+				\tab A mem\'{o}ria de instru\c{c}\~{o}es foi implementada como uma mem\'{o}ria somente de leitura\footnote{A mem\'{o}ria somente de leitura ou ROM (acr\^{o}nimo em ingl\^{e}s de \textit{Read-Only Memory}) \'{e} um tipo de mem\'{o}ria que permite apenas a leitura, ou seja, as suas informa\c{c}\~{o}es s\~{a}o gravadas pelo fabricante uma \'{u}nica vez e ap\'{o}s isso n\~{a}o podem ser alteradas ou apagadas, somente acessadas.}. Sua descri\c{c}\~{a}o \'{e} bem simples e pode ser vista na imagem \ref{fig:ROMMemory_x16} logo abaixo:
+				\begin{figure}[H]
+					\centering
+					\caption[Mem\'{o}ria de instru\c{c}\~{o}es]{Declara\c{c}\~{a}o da mem\'{o}ria de instru\c{c}\~{o}es}
+					\label{fig:ROMMemory_x16}
+					\begin{lstlisting}[style=vhdl]
+entity ROMMemory_x16 is
+	port(
+		address : in  std_logic_vector(15 downto 0);
+		data	: out std_logic_vector(15 downto 0)
+	);
+end ROMMemory_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{address} - Endere\c{c}o do qual se deseja ler.
+					\item \textbf{data} - valor armazenado na mem\'{o}ria no endere\c{c}o \textbf{address}.
+				\end{itemize}
+			\subsubsection[Mem\'{o}ria de dados]{Mem\'{o}ria de dados}
+				\tab A mem\'{o}ria de dados foi implementada como uma mem\'{o}ria s\'{i}ncrona de acesso din\^{a}mico aleat\'{o}rio\footnote{\textit{Synchronous dynamic random access memory} (SDRAM) \'{e} uma mem\'{o}ria de acesso din\^{a}mico rand\^{o}mico (DRAM) que \'{e} sincronizada com o barramento do sistema, ou mais precisamente, com a transi\c{c}\~{a}o de subida do clock. Permite uma opera\c{c}\~{a}o mais justa pois o CPU saber\'{a} exatamente quando os dados estar\~{a}o dispon\'{i}veis.}. Sua descri\c{c}\~{a}o \'{e} como na figura \ref{fig:RAMMemory_x16} e sua visualiza\c{c}\~{a}o est\'{a} na figura \ref{fig:RAMMemory_x16_RTL}.
+				\begin{figure}[H]
+					\centering
+					\caption[Mem\'{o}ria de dados]{Declara\c{c}\~{a}o da mem\'{o}ria de dados}
+					\label{fig:RAMMemory_x16}
+					\begin{lstlisting}[style=vhdl]
+entity RAMMemory_x16 is
+	port(
+		clock   	: in  std_logic;
+		write_memory: in  std_logic;
+		address 	: in  std_logic_vector(15 downto 0);
+		input_data  : in  std_logic_vector(15 downto 0);
+		output_data : out std_logic_vector(15 downto 0)
+	);
+end entity RAMMemory_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{clock} - Sinal de clock do processador.
+					\item \textbf{write\_memory} - Flag para definir se o valor \textbf{input\_data} deve ser escrito na mem\'{o}ria no endere\c{c}o \textbf{address}.
+					\item \textbf{address} - Endere\c{c}o da mem\'{o}ria que est\'{a} sendo acessado.
+					\item \textbf{input\_data} - Dado a ser potencialmente escrito.
+					\item \textbf{output\_data} - Dado escrito na mem\'{o}ria no endere\c{c}o \textbf{address}.
+				\end{itemize}
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o da mem\'{o}ria de dados]{Vizualiza\c{c}\~{a}o da mem\'{o}ria de dados}
+					\label{fig:RAMMemory_x16_RTL}
+					\includegraphics[height=3.25cm]{images/RAMMemory_x16_RTL.png}
+				\end{figure}
+			\subsubsection[Unidade de controle]{Unidade de controle}
+				\tab A unidade de controle \'{e} um componente fundamental para ``orquestrar" o processador Holocron Battle Droid 16 bits. Ela recebe o \textbf{Opcode} e o campo \textbf{Funct} e gera flags para todos os outros componentes (especificamente 11 flags). a sua declara\c{c}\~{a}o \'{e} vista na figura \ref{fig:ControlUnity_x16}. 
+				\begin{figure}[H]
+					\centering
+					\caption[Unidade de controle]{Declara\c{c}\~{a}o da unidade de controle}
+					\label{fig:ControlUnity_x16}
+					\begin{lstlisting}[style=vhdl]
+entity ControlUnity_x16 is 
+	port(
+		opcode 					: in STD_LOGIC_VECTOR(4 downto 0);
+		funct 					: in STD_LOGIC_VECTOR(2 downto 0);	
+		ula, r1w, r1r 	: out std_logic_vector(3 downto 0);
+		wr1, wr2, ron, 
+		row, dvc, sri, mou : out std_logic;
+		bool 					: out std_logic_vector(1 downto 0)
+);
+end ControlUnity_x16;
+					\end{lstlisting}
+				\end{figure}
+				\begin{itemize}
+					\item \textbf{opcode} - C\'{o}digo da opera\c{c}\~{a}o desejada.
+					\item \textbf{funct} - Modificador da fun\c{c}\~{a}o do \textbf{opcode}.
+					\item \textbf{ula} - C\'{o}digo da opera\c{c}\~{a}o que a ULA far\'{a}.
+					\item \textbf{r1w} - Confirma\c{c}\~{a}o de escrita do dado no registrador 1 do banco de registradores.
+					\item \textbf{r1r} - Confirma\c{c}\~{a}o de leitura do dado no registrador 1 do banco de registradores.
+					\item \textbf{wr1} - Indica ao banco de registradores se o dado no registrador 1 deve ser gravado.
+					\item \textbf{wr2} - Indica ao banco de registradores se o dado no registrador 2 deve ser gravado.
+					\item \textbf{ron} - Indica para a ULA se o segundo operando \'{e} o valor contido no registrador ou o valor imediato como constante.
+					\item \textbf{row} - Indica pra mem\'{o}ria de dados se \'{e} para gravar ou ler do endere\c{c}o que ela receber.
+					\item \textbf{dvc} - Indica a inten\c{c}\~{a}o de um desvio no fluxo do programa.
+					\item \textbf{sri} - Indica se, caso haja um salto condicional, o novo endere\c{c}o dever\'{a} ser calculado a partir do valor contido em um registrador ou deve-se usar o valor imediato recebido.
+					\item \textbf{mou} - indica se o valor que ser\'{a} escrito no registrador 1 \'{e} proveniente da mem\'{o}ria de dados ou de uma opera\c{c}\~{a}o da ULA.
+					\item \textbf{bool} - Indica se deve ser checado o valor do registrador \$bool para efetuar o salto, se sim, indica tamb\'{e}m o tipo de checagem (\textit{True} ou \textit{False}).
+				\end{itemize}
+				Para cada Instru\c{c}\~{a}o que o Holocron Battle Droid 16 bits realiza, existem valores \'{u}nicos para cada flag. A tabela \ref{tab:flags_control_unit}, logo abaxo, revela o comportamento de cada uma das flags para cada instru\c{c}\~{a}o, por\'{e}m, mostra apenas o c\'{o}digo de cada instru\c{c}\~{a}o, a descri\c{c}\~{a}o do que ela faz foi mostrada na tabela \ref{tab:opcodes_and_functs}. Os campos com * indicam que o valor que determinada flag assume n\~{a}o tem relev\^{a}ncia naquele contexto, podendo assim ser 0 ou 1 sem que isso mude algo (comumente chamado de textit{don't care}).
+				
+				\begin{longtable}{l c c c c c c c c c c c c c}
+					\caption[Flags da unidade de controle]{Flags da unidade de controle}\\
+					\label{tab:flags_control_unit}
+					\textbf{Nome} & \textbf{opcode} & \textbf{funct} & \textbf{ula} & \textbf{r1w} & \textbf{r1r} & \textbf{wr1} & \textbf{wr2} & \textbf{ron} & \textbf{row} & \textbf{dvc} & \textbf{sri} & \textbf{mou} & \textbf{bool}
+					\endfirsthead
+					\textbf{Nome} & \textbf{opcode} & \textbf{funct} & \textbf{ula} & \textbf{r1w} & \textbf{r1r} & \textbf{wr1} & \textbf{wr2} & \textbf{ron} & \textbf{row} & \textbf{dvc} & \textbf{sri} & \textbf{mou} & \textbf{bool}
+					\endhead
+					\multicolumn{14}{r}{{\textbf{Continua na pr\'{o}xima p\'{a}gina...}}} \\
+					\endfoot
+					\multicolumn{14}{r}{{}} \\
+					\endlastfoot
+					ADD		& 00000	& **0	&0000	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					SUB 	& 00000	& **1	&0000	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					ADDI	& 00001	& **0	&0000	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					SUBI 	& 00001	& **1	&0000	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					AND 	& 00010	& *00	&0010	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					ANDI 	& 00010	& *10	&0010	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					NAND 	& 00010	& *01	&0010	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					NANDI	& 00010	& *11	&0010	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					OR 		& 00011	& *00	&0011	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					ORI		& 00011	& *10	&0011	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					NOR 	& 00011	& *01	&0011	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					NORI 	& 00011	& *11	&0011	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					XOR 	& 00100	& *00	&0100	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					XORI 	& 00100	& *10	&0100	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					XNOR 	& 00100	& *01	&0100	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					NORI	& 00100	& *11	&0100	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					SRA 	& 00101	& ***	&0101	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					SRL 	& 00110	& ***	&0110	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					SLLA 	& 00111	& ***	&0111	&0000	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					EQU 	& 01000	& **0	&1000	&0011	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					EQUI 	& 01000	& **1	&1000	&0011	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					DIF 	& 01001	& **0	&1001	&0011	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					DIFI 	& 01001	& **1	&1001	&0011	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					SMA 	& 01010	& **0	&1010	&0011	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					SMAI 	& 01010	& **1	&1010	&0011	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					SMEQ 	& 01011	& **0	&1011	&0011	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					SMEQI	& 01011	& **1	&1011	&0011	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					GRT 	& 01100	& **0	&1100	&0011	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					GRTI 	& 01100	& **1	&1100	&0011	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					GREQ 	& 01101	& **0	&1101	&0011	&0000	&1	&0	&0	&0	&0	&*	&1	&**\\
+					GREQI	& 01101	& **1	&1101	&0011	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					MULT 	& 01110	& **0	&1110	&0010	&0000	&1	&1	&0	&0	&0	&*	&1	&**\\
+					MULTI	& 01110	& **1	&1110	&0010	&0000	&1	&1	&1	&0	&0	&*	&1	&**\\
+					DIV 	& 01111	& **0	&1111	&0010	&0000	&1	&1	&0	&0	&0	&*	&1	&**\\
+					DIVI 	& 01111	& **1	&1111	&0010	&0000	&1	&1	&1	&0	&0	&*	&1	&**\\
+					JR 		& 10000	& ***	&****	&****	&0000	&0	&0	&*	&0	&1	&0	&*	&01\\
+					JIM 	& 10001	& ***	&****	&****	&0000	&0	&0	&*	&0	&1	&1	&*	&01\\
+					JRBT 	& 10010	& ***	&****	&****	&0011	&0	&0	&*	&0	&1	&0	&*	&11\\
+					JRBF 	& 10011	& ***	&****	&****	&0011	&0	&0	&*	&0	&1	&0	&*	&00\\
+					JIMBT	& 10100	& ***	&****	&****	&0011	&0	&0	&*	&0	&1	&1	&*	&11\\
+					JIMBF	& 10101	& ***	&****	&****	&0011	&0	&0	&*	&0	&1	&1	&*	&00\\
+					LDR 	& 10110	& ***	&****	&0000	&0000	&1	&0	&0	&0	&0	&*	&0	&**\\
+					LDI 	& 10111	& ***	&****	&0000	&0000	&1	&0	&1	&0	&0	&*	&0	&**\\
+					STR 	& 11000	& ***	&****	&****	&0000	&0	&0	&0	&1	&0	&*	&0	&**\\
+					STI		& 11001	& ***	&****	&****	&0000	&0	&0	&1	&1	&0	&*	&0	&**\\
+					MOVE	& 11010	& **0	&0001	&0000	&0000	&1	&0	&1	&0	&0	&*	&1	&**\\
+					MOVI	& 11010	& **1	&0001	&0000	&0000	&1	&0	&1	&1	&0	&*	&1	&**\\
+				\end{longtable}
+			\tab Uma visualiza\c{c}\~{a}o simb\'{o}lica do circuito resultante, gerada pelo Quartus, \'{e} mostrada na figura \ref{fig:ControlUnity_x16_RTL}, nela podemos ver todos os pinos descrito na figura \ref{fig:ControlUnity_x16}.
+				\begin{figure}[H]
+					\centering
+					\caption[Vizualiza\c{c}\~{a}o da unidade de controle]{Vizualiza\c{c}\~{a}o da unidade de controle}
+					\label{fig:ControlUnity_x16_RTL}
+					\includegraphics[height=10cm]{images/Control_Unity_RTL.png}
+				\end{figure}
+			
+			
+		\subsection{Datapath}
+			\tab A cole\c{c}\~{a}o de unidades funcionais que executam opera\c{c}\~{o}es de processamento de dados do Holocron Battle Droid 16 bits (\textit{datapath}) \'{e} mostrada na figura \ref{fig:Datapath_RTL} abaixo.		
+			
+			\begin{figure}[H]
+				\centering
+				\caption[Datapath]{Vizualiza\c{c}\~{a}o do datapath}
+				\label{fig:Datapath_RTL}
+				\includegraphics[width=16cm]{images/datapath.png}
+			\end{figure}
+	
+	\cleardoublepage
+	\section{Simula\c{c}\~{o}es e Testes}
+		\tab Para testar o Holocron Battle Droid 16 bits foram escritos algoritmos simples, todos com o intuito de exemplificar algumas fun\c{c}\~{o}es espec\'{i}ficas do processador.  Durante as simula\c{c}\~oes a frequ\^{e}ncia do clock foi definina como 1 GHz\footnote{ 1 GHz = $1 * 10^{9}$ = 1.000.000.000 ciclos por segundo} (1 ciclo completo a cada nanosegundo) por quest\~{o}es de didatica, para facilitar a vizualiza\c{c}\~ao na waveform. A seguir veremos alguns desses algoritmos.
+		
+		\subsection[Sequ\^{e}ncia de Fibonacci]{Sequ\^{e}ncia de Fibonacci}
+			\tab Na matem\'{a}tica, a sucess\~{a}o de Fibonacci (tamb\'{e}m chamada de sequ\^{e}ncia de Fibonacci) \'{e} uma sequ\^{e}ncia de n\'{u}meros inteiros, come\c{c}ando normalmente por 0 e 1, na qual, cada termo subsequente corresponde \`{a} soma dos dois anteriores\footnote{Sequ\^{e}ncia de Fibonacci: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, ...}. A sequ\^{e}ncia recebeu o nome do matem\'{a}tico italiano Leonardo de Pisa, mais conhecido por Fibonacci, que descreveu, no ano de 1202, o crescimento de uma popula\c{c}\~{a}o de coelhos, a partir desta. Tal sequ\^{e}ncia j\'{a} era no entanto, conhecida na antiguidade.
+			\subsubsection{C\'{o}digo}			
+				\tab O codigo gerado calcula os 20 primeiros n\'{u}meros dessa sequ\^{e}ncia. A tabela \ref{tab:Codigo_fibonacci} mostra todo o c\'{o}digo, bem como a contru\c{c}\~{a}o de cada instru\c{c}\~{a}o.		
+				
+				\begin{longtable}{l c c c c c}
+					\caption[Algoritmo que calcula a sequ\^encia de fibonacci]{Algoritmo que calcula a sequ\^encia de fibonacci}\\
+					\label{tab:Codigo_fibonacci}
+					\textbf{\centering C\'{o}digo} & \textbf{Opcode} & \textbf{R1} & \textbf{R2} & \textbf{Funct} & \textbf{Instru\c{c}\~{a}o}
+					\endfirsthead
+					\textbf{\centering C\'{o}digo} & \textbf{Opcode} & \textbf{R1} & \textbf{R2} & \textbf{Funct} & \textbf{Instru\c{c}\~{a}o}
+					\endhead
+					\multicolumn{6}{r}{{\textbf{Continua na pr\'{o}xima p\'{a}gina...}}} \\
+					\endfoot
+					\multicolumn{6}{r}{{}} \\
+					\endlastfoot
+					
+					
+\begin{lstlisting}[style=mipscientist] 
+01 main: movi  $s0, 0;		
+\end{lstlisting}	&11010	&0100	&0000				&001	&1101001000000001\\
+
+\begin{lstlisting}[style=mipscientist]  
+02       movi  $s1, 1;		
+\end{lstlisting}	&11010	&0101	&0001				&001	&1101001010001001\\
+
+\begin{lstlisting}[style=mipscientist]  
+03       movi  $s3, 15;		
+\end{lstlisting}	&11010	&0111	&1111				&001	&1101001111111001\\
+
+\begin{lstlisting}[style=mipscientist]  
+04       addi  $s3, 5;		
+\end{lstlisting}	&00001	&0111	&0101				&000	&0000101110101000\\
+
+\begin{lstlisting}[style=mipscientist]  
+05       movi  $s4, 2;		
+\end{lstlisting}	&11010	&1000	&0010				&001	&1101010000010001\\
+
+\begin{lstlisting}[style=mipscientist]  
+06       smeq  $s3, $zero;		
+\end{lstlisting}	&01011	&0111	&0000				&000	&0101101110000000\\
+
+\begin{lstlisting}[style=mipscientist]  
+07       jimbt Endg;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000001111}} 	&1010000000001111\\
+
+\begin{lstlisting}[style=mipscientist]  
+08       move  $s2, $s0;		
+\end{lstlisting}	&11010	&0110	&0100				&001	&1101001100100000\\
+
+\begin{lstlisting}[style=mipscientist]  
+09       equ   $s3, $s1;		
+\end{lstlisting}	&01000	&0111	&0101				&000	&0100001110101000\\
+
+\begin{lstlisting}[style=mipscientist]  
+10       jimbt Endg;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000001100}}  &1010000000001100\\
+
+\begin{lstlisting}[style=mipscientist]  
+11       move  $s2, $s1;		
+\end{lstlisting}	&11010	&0110	&0101				&001	&1101001100101000\\
+
+\begin{lstlisting}[style=mipscientist]  
+12       equi  $s3, 1;		
+\end{lstlisting}	&01000	&0111	&0001				&001	&0100001110001001\\
+
+\begin{lstlisting}[style=mipscientist]  
+13       jimbt Endg;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000001001}}  &1010000000001001\\
+
+\begin{lstlisting}[style=mipscientist]  
+14 lpng: move  $t0, $s0;		
+\end{lstlisting}	&11010	&1100	&0100				&000	&1101011000100000\\
+
+\begin{lstlisting}[style=mipscientist]  
+15       add   $t0, $s1;		
+\end{lstlisting}	&00000	&1100	&0101				&000	&0000011000101000\\
+
+\begin{lstlisting}[style=mipscientist]  
+16       move  $s2, $t0;		
+\end{lstlisting}	&11010  &0110	&1100				&000	&1101001101100000\\
+
+\begin{lstlisting}[style=mipscientist]  
+17       move  $s0, $s1;		
+\end{lstlisting}	&11010	&0100	&0101				&000	&1101001000101000\\
+
+\begin{lstlisting}[style=mipscientist]  
+18       move  $s1, $s2;		
+\end{lstlisting}	&11010	&0101	&0110				&000	&1101001010110000\\
+
+\begin{lstlisting}[style=mipscientist]  
+19       addi  $s4, 1;		
+\end{lstlisting}	&00001	&1000	&0001				&000	&0000110000001000\\
+
+\begin{lstlisting}[style=mipscientist]  
+20       equ   $s3, $s4;		
+\end{lstlisting}	&01000	&0111	&1000				&000	&0100001111000000\\
+
+\begin{lstlisting}[style=mipscientist]  
+21       jimbt lpng;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{11111111001}}  &1010011111111001\\
+
+\begin{lstlisting}[style=mipscientist]  
+22 Endg:	
+\end{lstlisting}	&\multicolumn{5}{c}{{}}
+						\end{longtable}
+				Observe nas linhas 03 e 04, onde o registrador \$s3 recebe 15 e em seguida, \'{e} somado 5 a ele. Isso acontece por que o tamanho do endere\c{c}o de cada valor (R1 e R2) \'{e} apenas 4 bits, dessa forma, o maior valor que poder\'{a} ser passado imediatamente \'{e} 1111, 15 em decimal. Um artif\'{i}cio que deve ser utilizado para sobrepor esse problema \'{e} somar os valores at\'{e} que a quantidade desejada seja atingida.
+			\subsubsection[Waveform]{Resultados na Waveform}
+				
+				\tab A execu\c{c}\~{a}o do algoritmo mostrado na tabela \ref{tab:Codigo_fibonacci} \'{e} vista continuamente nas figuras \ref{fig:Fibonacci_test_00_30ns}, \ref{fig:Fibonacci_test_30_60ns}, \ref{fig:Fibonacci_test_60_90ns}, \ref{fig:Fibonacci_test_90_120ns} e \ref{fig:Fibonacci_test_120_320ns}.
+				
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Fibonacci 30ns]{Waveform executando o algoritmo de Fibonacci nos primeiros 30ns}
+					\label{fig:Fibonacci_test_00_30ns}
+					\includegraphics[width=11cm]{images/fibonacci_test_00_30ns.png}
+				\end{figure}
+			
+				A figura \ref{fig:Fibonacci_test_00_30ns} acima mostra a execu\c{c}\~{a}o do algoritmo durante os 30 primeiros nanosegundos. O Processador Holocron Battle Droid 16 bits leva em considera\c{c}\~{a}o a borda de subida de 0 para 1 do clock para realizar a opera\c{c}\~{a}o.
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Fibonacci 60ns]{Waveform executando o algoritmo de Fibonacci entre 30 e 60ns}
+					\label{fig:Fibonacci_test_30_60ns}
+					\includegraphics[width=11cm]{images/fibonacci_test_30_60ns.png}
+				\end{figure}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Fibonacci 90ns]{Waveform executando o algoritmo de Fibonacci entre 60 e 90ns}
+					\label{fig:Fibonacci_test_60_90ns}
+					\includegraphics[width=11cm]{images/fibonacci_test_60_90ns.png}
+				\end{figure}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Fibonacci 120ns]{Waveform executando o algoritmo de Fibonacci entre 90 e 120ns}
+					\label{fig:Fibonacci_test_90_120ns}
+					\includegraphics[width=11cm]{images/fibonacci_test_90_120ns.png}
+				\end{figure}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Fibonacci 320ns]{Waveform executando o algoritmo de Fibonacci entre 120 e 320ns}
+					\label{fig:Fibonacci_test_120_320ns}
+					\includegraphics[width=11cm]{images/fibonacci_test_120_320ns.png}
+				\end{figure}
+			
+		\subsection[N\'umeros primos]{N\'umeros Primos}
+		
+			\tab N\'umeros primos s\~ao os n\'umeros naturais que t\^em apenas dois divisores diferentes: o 1 e ele mesmo\footnote{1 n\~ao \'e um n\'umero primo, porque ele tem apenas um divisor que \'e ele mesmo.}. Os n\'umeros que t\^em mais de dois divisores s\~ao chamados n\'umeros compostos.  Exemplos:
+			
+			\begin{itemize}
+				\item 2 tem apenas os divisores 1 e 2, portanto 2 \'e um n\'umero primo\footnote{2 \'e o \'unico n\'umero primo que \'e par}.
+				\item 17 tem apenas os divisores 1 e 17, portanto 17 \'e um n\'umero primo.
+				\item 10 tem os divisores 1, 2, 5 e 10, portanto 10 n\~ao \'e um n\'umero primo.
+			\end{itemize}
+		
+			\subsubsection[C\'odigo]{C\'odigo}
+			
+			\tab O c\'odigo abaixo, mostrado na tabela \ref{tab:Codigo_primos}, calcula todos os n\'umeros primos entre 10 e 100, especificamente.
+				
+			\begin{longtable}{l c c c c c}
+				\caption[Algoritmo que calcula n\'umeros primos]{Algoritmo que calcula n\'umeros primos}\\
+				\label{tab:Codigo_primos}
+				\textbf{\centering C\'{o}digo} & \textbf{Opcode} & \textbf{R1} & \textbf{R2} & \textbf{Funct} & \textbf{Instru\c{c}\~{a}o}
+				\endfirsthead
+				\textbf{\centering C\'{o}digo} & \textbf{Opcode} & \textbf{R1} & \textbf{R2} & \textbf{Funct} & \textbf{Instru\c{c}\~{a}o}
+				\endhead
+				\multicolumn{6}{r}{{\textbf{Continua na pr\'{o}xima p\'{a}gina...}}} \\
+				\endfoot
+				\multicolumn{6}{r}{{}} \\
+				\endlastfoot
+			
+				\begin{lstlisting}[style=mipscientist] 
+01 main: movi  $s0, 10;		
+				\end{lstlisting}	&11010	&0100	&1010				&001	&1101001001010001\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+02       movi  $t0, 12;		
+				\end{lstlisting}	&11010	&1100	&1100				&001	&1101011001100001\\
+
+				\begin{lstlisting}[style=mipscientist] 
+03       movi  $s5, 13;		
+				\end{lstlisting}	&11010	&1001	&1101				&001	&1101010011101001\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+04       add   $s5, $t0;		
+				\end{lstlisting}	&00000	&1001	&1100				&000	&0000010011100000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+05       add   $s5, $s5;		
+				\end{lstlisting}	&00000	&1001	&1001				&000	&0000010011001000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+06       add   $s5, $s5;		
+				\end{lstlisting}	&00000	&1001	&1001				&000	&0000010011001000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+07       move  $s1, $s0;		
+				\end{lstlisting}	&11010	&0101	&0100				&000	&1101001010100000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+08 lpn1: move  $s3, $s1;		
+				\end{lstlisting}	&11010	&0111	&0101				&000	&1101001110101000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+09       movi  $s4, 2;		
+				\end{lstlisting}	&11010	&1000	&0010				&001	&1101010000010001\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+10       div   $s3, $s4;		
+				\end{lstlisting}	&01111	&0111	&1000				&000	&0111101111000000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+11       move  $s2, $low;		
+				\end{lstlisting}	&11010	&0110	&0010				&000	&1101001100010000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+12 lpn2: equ   $s4, $s2;		
+				\end{lstlisting}	&01000	&1000	&0110				&000	&0100010000110000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+13       jimbt out1;		
+				\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000000110}}  &1010000000000110\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+14       div   $s3, $s4;		
+				\end{lstlisting}	&01111	&0111	&1000				&000	&0111101111000000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+15       equ   $high, $zero;		
+				\end{lstlisting}	&01000	&0001	&0000				&000	&0100000010000000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+16       jimbt out2;		
+				\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000000100}}  &1010000000000100\\	
+				
+				\begin{lstlisting}[style=mipscientist] 
+17       addi  $s4, 1;		
+				\end{lstlisting}	&00001	&1000	&0001				&000	&0000110000001000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+18       jim   lpn2;		
+				\end{lstlisting}	&10001	&\multicolumn{3}{c}{{11111111010}}  &1000111111111010\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+19 out1: move  $s7, $s3;		
+				\end{lstlisting}	&11010	&1011	&0111				&000	&1101010110111000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+20 out2: addi  $s1, 1;		
+				\end{lstlisting}	&00001	&0101	&0001				&000	&0000101010001000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+21       equ   $s1, $s5;		
+				\end{lstlisting}	&01000	&0101	&1001				&000	&0100001011001000\\
+				
+				\begin{lstlisting}[style=mipscientist] 
+22       jimbf lpn1;		
+				\end{lstlisting}	&10101	&\multicolumn{3}{c}{{11111110010}}  &1010111111110010\\
+			\end{longtable}
+			Observe que da linha 02 a linha 06 faz-se, mais uma vez, uso do artif\'icio citado no c\'odigo que calcula a sequ\^encia de Fibonacci (tabela \ref{tab:Codigo_fibonacci}) para que o valor 100 possa ser passado para o registrador \$s5. Neste caso soma-se 12 \`a 13, em seguida duplica-se o resultado duas vezes (12 + 13 = 25, 25 + 25 = 50, 50 + 50 = 100).\\
+			\tab O algoritmo \'e bem simples: o primeiro la\c{c}o de repeti\c{c}\~{a}o percorreos valores de 10 a 100 enquanto o segundo la\c{c}o tenta dividir cada um desses valores de 2 a n/2, onde n \'e o valor atual do iterador do la\c{c}o 1. Caso o resto da divis\~ao seja 0, quebra-se o la\c{c}o e conclui-se que o n\'umero em quest\~ao n\~ao \'e primo (linhas 15 e 16). Quando um n\'umero \'e considerado primo, seu valor \'e armazenado no registrador \$s7 (linha 19) para facilitar nossa visualiza\c{c}\~{a}o na Waveform.
+			
+			\subsubsection[Waveform]{Resultados na Waveform}
+			
+			\tab O algoritmo da tabela \ref{tab:Codigo_primos} sendo executado \'e mostrado na imagem \ref{fig:Primos_test_full}.
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform N\'umeros primos]{Waveform executando o algoritmo que calcula n\'umeros primos}
+					\label{fig:Primos_test_full}
+					\includegraphics[width=16cm]{images/primos_test_full.png}
+				\end{figure}
+			
+			Coment\'arios sobre a execucao.
+			
+		\subsection[Bubble Sort]{Bubble Sort}
+			
+			\tab O \textit{bubble sort}, ou ordena\c{c}\~{a}o por flutua\c{c}\~{a}o (literalmente ``por bolha"), \'e um algoritmo de ordena\c{c}\~{a}o dos mais simples. A ideia \'e percorrer o vetor diversas vezes, a cada passagem fazendo flutuar para o topo o maior elemento da sequ\^encia. Essa movimenta\c{c}\~{a}o lembra a forma como as bolhas em um tanque de \'agua procuram seu pr\'oprio nível, e disso vem o nome do algoritmo.
+			
+			\subsubsection[C\'odigo]{C\'odigo}
+			
+				\tab O c\'odigo mostrado na tabela \ref{tab:Codigo_bubblesort} \'e uma implementa\c{c}\~{a}o do algoritmo de ordena\c{c}\~{a}o \textit{bubble sort}.
+				
+				\begin{longtable}{l c c c c c}
+					\caption[Algoritmo de ordena\c{c}\~ao \textit{bubble sort}]{Algoritmo de ordena\c{c}\~ao \textit{bubble sort}}\\
+					\label{tab:Codigo_bubblesort}
+					\textbf{\centering C\'{o}digo} & \textbf{Opcode} & \textbf{R1} & \textbf{R2} & \textbf{Funct} & \textbf{Instru\c{c}\~{a}o}
+					\endfirsthead
+					\textbf{\centering C\'{o}digo} & \textbf{Opcode} & \textbf{R1} & \textbf{R2} & \textbf{Funct} & \textbf{Instru\c{c}\~{a}o}
+					\endhead
+					\multicolumn{6}{r}{{\textbf{Continua na pr\'{o}xima p\'{a}gina...}}} \\
+					\endfoot
+					\multicolumn{6}{r}{{}} \\
+					\endlastfoot
+
+\begin{lstlisting}[style=mipscientist] 
+01       jim   main;		
+\end{lstlisting}	&10001	&\multicolumn{3}{c}{{00000010001}}  &1000100000010001\\
+
+\begin{lstlisting}[style=mipscientist] 
+02 prt1: movi  $t1, 0;		
+\end{lstlisting}	&11010	&1101	&0000				&001	&1101011010000001\\
+
+\begin{lstlisting}[style=mipscientist] 
+03 lpn1: equ   $t1, $s1;		
+\end{lstlisting}	&01000	&1101	&0101				&000	&0100011010101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+04       jimbt bck1;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000100000}}  &1010000000100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+05       move  $t3, $s0;		
+\end{lstlisting}	&11010	&1111	&0100				&000	&1101011110100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+06       add   $t3, $t1;		
+\end{lstlisting}	&00000	&1111	&1101				&000	&0000011111101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+07       ldr   $s7, $t3;		
+\end{lstlisting}	&10110	&1011	&1111				&000	&1011010111111000\\
+
+\begin{lstlisting}[style=mipscientist] 
+08       addi  $t1, 1;		
+\end{lstlisting}	&00001	&1101	&0001				&000	&0000111010001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+09       jim   lpn1;		
+\end{lstlisting}	&10001	&\multicolumn{3}{c}{{11111111010}}  &1000111111111010\\
+
+\begin{lstlisting}[style=mipscientist] 
+10 prt2: movi  $t1, 0;		
+\end{lstlisting}	&11010	&1101	&0000				&001	&1101011010000001\\
+
+\begin{lstlisting}[style=mipscientist] 
+11 lpn2: equ   $t1, $s1;		
+\end{lstlisting}	&01000	&1101	&0101				&000	&0100011010101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+12       jimbt bck2;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{00000101110}}  &1010000000101110\\
+
+\begin{lstlisting}[style=mipscientist] 
+13       move  $t3, $s0;		
+\end{lstlisting}	&11010	&1111	&0100				&000	&1101011110100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+14       add   $t3, $t1;		
+\end{lstlisting}	&00000	&1111	&1101				&000	&0000011111101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+15       ldr   $s7, $t3;		
+\end{lstlisting}	&10110	&1011	&1111				&000	&1011010111111000\\
+
+\begin{lstlisting}[style=mipscientist] 
+16       addi  $t1, 1;		
+\end{lstlisting}	&00001	&1101	&0001				&000	&0000111010001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+17       jim   lpn2;		
+\end{lstlisting}	&10001	&\multicolumn{3}{c}{{11111111010}}  &1000111111111010\\
+
+\begin{lstlisting}[style=mipscientist] 
+18 main: movi  $s0, 0;		
+\end{lstlisting}	&11010	&0100	&0000				&001	&1101001000000001\\
+
+\begin{lstlisting}[style=mipscientist] 
+19       movi  $s1, 5;		
+\end{lstlisting}	&11010	&0101	&0101				&001	&1101001010101001\\
+
+\begin{lstlisting}[style=mipscientist] 
+20       move  $t0, $s0;		
+\end{lstlisting}	&11010	&1100	&0100				&000	&1101011000100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+21       movi  $t1, 5;		
+\end{lstlisting}	&11010	&1101	&0101				&001	&1101011010101001\\
+
+\begin{lstlisting}[style=mipscientist] 
+22       str   $t1, $t0;		
+\end{lstlisting}	&11000	&1101	&1100				&000	&1100011011100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+23       addi  $t0, 1;		
+\end{lstlisting}	&00001	&1100	&0001				&000	&0000111000001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+24       movi  $t1, 3;		
+\end{lstlisting}	&11010	&1101	&0011				&001	&1101011010011001\\
+
+\begin{lstlisting}[style=mipscientist] 
+25       str   $t1, $t0;		
+\end{lstlisting}	&11000	&1101	&1100				&000	&1100011011100000\\
+	
+\begin{lstlisting}[style=mipscientist] 
+26       addi  $t0, 1;		
+\end{lstlisting}	&00001	&1100	&0001				&000	&0000111000001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+27       movi  $t1, 9;		
+\end{lstlisting}	&11010	&1101	&1001				&001	&1101011011001001\\
+
+\begin{lstlisting}[style=mipscientist] 
+28       str   $t1, $t0;		
+\end{lstlisting}	&11000	&1101	&1100				&000	&1100011011100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+29       addi  $t0, 1;		
+\end{lstlisting}	&00001	&1100	&0001				&000	&0000111000001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+30       movi  $t1, 7;		
+\end{lstlisting}	&11010	&1101	&0111				&001	&1101011010111001\\
+
+\begin{lstlisting}[style=mipscientist] 
+31       str   $t1, $t0;		
+\end{lstlisting}	&11000	&1101	&1100				&000	&1100011011100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+32       addi  $t0, 1;		
+\end{lstlisting}	&00001	&1100	&0001				&000	&0000111000001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+33       movi  $t1, 1;		
+\end{lstlisting}	&11010	&1101	&0001				&001	&1101011010001001\\
+
+\begin{lstlisting}[style=mipscientist] 
+34       str   $t1, $t0;		
+\end{lstlisting}	&11000	&1101	&1100				&000	&1100011011100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+35       jim   prt1;		
+\end{lstlisting}	&10001	&\multicolumn{3}{c}{{11111011111}}  &1000111111011111\\
+
+\begin{lstlisting}[style=mipscientist] 
+36 bck1: movi  $t0, 0;		
+\end{lstlisting}	&11010	&1100	&0000				&001	&1101011000000001\\
+
+\begin{lstlisting}[style=mipscientist] 
+37       move  $t1, $s1;		
+\end{lstlisting}	&11010	&1101	&0101				&000	&1101011010101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+38       subi  $t1, 1;		
+\end{lstlisting}	&00001	&1101	&0001				&001	&0000111010001001\\
+
+\begin{lstlisting}[style=mipscientist] 
+39 lpn3: movi  $t2, 0;		
+\end{lstlisting}	&11010	&1110	&0000				&001	&1101011100000001\\
+
+\begin{lstlisting}[style=mipscientist] 
+40       move  $t3, $t1;		
+\end{lstlisting}	&11010	&1111	&1101				&000	&1101011111101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+41       sub   $t3, $t0;		
+\end{lstlisting}	&00000	&1111	&1100				&001	&0000011111100001\\
+
+\begin{lstlisting}[style=mipscientist] 
+42 lpn4: move  $s2, $s0;		
+\end{lstlisting}	&11010	&0110	&0100				&000	&1101001100100000\\
+
+\begin{lstlisting}[style=mipscientist] 
+43       add   $s2, $t2;		
+\end{lstlisting}	&00000	&0110	&1110				&000	&0000001101110000\\
+
+\begin{lstlisting}[style=mipscientist] 
+44       ldr   $s7, $s2;		
+\end{lstlisting}	&10110	&1011	&0110				&000	&1011010110110000\\
+
+\begin{lstlisting}[style=mipscientist] 
+45       addi  $s2, 1;		
+\end{lstlisting}	&00001	&0110	&0001				&000	&0000101100001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+46       ldr   $s6, $s2;		
+\end{lstlisting}	&10110	&1010	&0110				&000	&1011010100110000\\
+
+\begin{lstlisting}[style=mipscientist] 
+47       sma   $s6, $s7;		
+\end{lstlisting}	&01010	&1010	&1011				&000	&0101010101011000\\
+
+\begin{lstlisting}[style=mipscientist] 
+48       jimbf nswp;		
+\end{lstlisting}	&10101	&\multicolumn{3}{c}{{00000000100}}  &1010100000000100\\
+
+\begin{lstlisting}[style=mipscientist] 
+49       str   $s7, $s2;		
+\end{lstlisting}	&11000	&1011	&0110				&000	&1100010110110000\\
+
+\begin{lstlisting}[style=mipscientist] 
+50       subi  $s2, 1;		
+\end{lstlisting}	&00001	&0110	&0001				&001	&0000101100001001\\
+
+\begin{lstlisting}[style=mipscientist] 
+51       str   $s6, $s2;		
+\end{lstlisting}	&11000	&1010	&0110				&000	&1100010100110000\\
+
+\begin{lstlisting}[style=mipscientist] 
+52 nswp: addi  $t2, 1;		
+\end{lstlisting}	&00001	&1110	&0001				&000	&0000111100001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+53       sma   $t2, $t3;		
+\end{lstlisting}	&01010	&1110	&1111				&000	&0101011101111000\\
+
+\begin{lstlisting}[style=mipscientist] 
+54       jimbt lpn4;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{11111110100}}  &1010011111110100\\
+
+\begin{lstlisting}[style=mipscientist] 
+55       addi  $t0, 1;		
+\end{lstlisting}	&00001	&1100	&0001				&000	&0000111000001000\\
+
+\begin{lstlisting}[style=mipscientist] 
+56       sma   $t0, $t1;		
+\end{lstlisting}	&01010	&1100	&1101				&000	&0101011001101000\\
+
+\begin{lstlisting}[style=mipscientist] 
+57       jimbt lpn3;		
+\end{lstlisting}	&10100	&\multicolumn{3}{c}{{11111101110}}  &1010011111101110\\
+
+\begin{lstlisting}[style=mipscientist] 
+58       jim   prt2;		
+\end{lstlisting}	&10001	&\multicolumn{3}{c}{{11111010000}}  &1000111111010000\\
+
+\begin{lstlisting}[style=mipscientist] 
+59 bck2:
+\end{lstlisting}	&\multicolumn{5}{c}{{ }}\\
+
+			\end{longtable}
+			
+			O c\'odigo acima pode ser dividido em 3 partes: A primeira parte, da linha 02 a 17, \'e composta pelas fun\c{c}\~{o}es de impress\~ao, servem para imprimir o vetor antes e depois da ordena\c{c}\~{a}o. A segunda parte, da linha 18 a 34, \'e onde o vetor \'e populado, isto \'e, preenchido. Nesse exemplo, especificamente, o vetor foi definido tendo tamanho 5 (linha 19) e foram inseridos os valores 5, 3, 9, 7 e 1 arbitrariamente. A terceira e \'ultima parte, da linha 36 a 57, \'e o algoritmo de ordena\c{c}\~{a}o propriamente dito.\\
+			\tab 
+			
+			\subsubsection[Waveform]{Resultados na Waveform}
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Algoritmo bubble sort 30ns]{Waveform executando o algoritmo de ordena\c{c}\~{a}o \textit{bubble sort} no intervalo de 0 a 30ns}
+					\label{fig:Bubblesort_test_00_30ns}
+					\includegraphics[width=16cm]{images/bubblesort_test_00_30ns.png}
+				\end{figure}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Algoritmo bubble sort 60ns]{Waveform executando o algoritmo de ordena\c{c}\~{a}o \textit{bubble sort} no intervalo de 30 a 60ns}
+					\label{fig:Bubblesort_test_30_60ns}
+					\includegraphics[width=16cm]{images/bubblesort_test_30_60ns.png}
+				\end{figure}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Algoritmo bubble sort 90ns]{Waveform executando o algoritmo de ordena\c{c}\~{a}o \textit{bubble sort} no intervalo de 60 a 90ns}
+					\label{fig:Bubblesort_test_60_90ns}
+					\includegraphics[width=16cm]{images/bubblesort_test_60_90ns.png}
+				\end{figure}
+			
+				\begin{figure}[H]
+					\centering
+					\caption[Waveform Algoritmo bubble sort 120ns]{ Waveform executando o algoritmo de ordena\c{c}\~{a}o \textit{bubble sort} no intervalo de 90 a 120ns}
+					\label{fig:Bubblesort_test_90_120ns}
+					\includegraphics[width=16cm]{images/bubblesort_test_90_120ns.png}
+				\end{figure}
+			
+			
+	
+	\cleardoublepage
+	\section{Considera\c{c}\~{o}es Finais}
+		\tab O objetivo desse trabalho foi relatar todo o processo de cria\c{c}\~{a}o do processador Holocron Battle Droid 16 bits.\\
+		\tab No planejamento o relat\'orio n\~ao cita, mas foi utilizada a ferramenta Logisim que \'e uma ferramenta educacional para a concep\c{c}\~{a}o e a simula\c{c}\~{a}o digital de circuitos l\'ogicos, com uma interface simples e com ferramentas para simular circuitos a medida em que s\~ao constru\'idos, \'e simples o bastante para facilitar a aprendizagem dos conceitos mais b\'asicos relacionados aos circuitos l\'ogicos. Esta foi muito \'util para a concep\c{c}\~{a}o vizual e estrutural do processador. Os c\'odigos escritos assim o foram no editor de texto notepad++, um editor de c\'odigo fonte gratuito que suporta v\'arios idiomas em primeira inst\^ancia em MIPS32 e executados no QtSpim que \'e um simulador aut\^onomo que executa programas MIPS32, ele l\^e e executa programas de linguagem de montagem escritos para este processador e tamb\'em fornece um depurador simples e um conjunto m\'inimo de servi\c{c}os do sistema operacional.\\
+		\tab O nome Holocron Battle Droid 16 bits foi inspirado simbolicamente na franquia \textit{Star Wars Expanded}: Holocron \'e uma abrevia\c{c}\~{a}o de cr\^onica hologr\'afica (\textit{Holographic Chronic}), ele foi um dispositivo cristalino lapidado org\^anico, em que os Jedi antigos armazenavam quantidades fenomenais de dados, bem como o guardi\~ao do holocron. Os Sith tamb\'em tinham sua pr\'opria forma de tecnologia de holocron, e parecem anteriores aos Jedi na utiliza\c{c}\~{a}oo da tecnologia em pelo menos tr\^es mil anos. O termo \textit{Droids} refere-se \`a um tipo de rob\^o inteligente e \textit{Battle Droid}, tamb\'em chamados de droides de combate, foi um tipo de droid projetado para combate. 16 bits devido ao tamanho de cada instru\c{c}\~{a}o que o processador recebe.\\		
+		\tab Foi, sem d\'uvidas, um trabalho muito proveitoso. N\~ao apenas no conhecimento do funcionamento de um processador uniciclo, mas em aperfei\c{c}oamento moral. A pr\'opria fraquia \textit{Star Wars Expanded} nos ensina que ``Grandes l\'ideres inspiram a grandeza em outras pessoas" e, por sorte, estou cercado de grandes l\'ideres aqui na Universidade Federal de Roraima que n\~ao se cansam de inspirar grandeza nas pessoas. Termino citando um de meus professores que certa vez disse: ``N\~ao olha muito pro lado, fa\c{c}a o seu melhor e fique tranquilo em rela\c{c}\~{a}o \`a isso.".
+\end{document}

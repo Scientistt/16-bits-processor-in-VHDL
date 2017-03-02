@@ -1,0 +1,163 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity RegisterBank_4x16 is 
+	port (
+	clock, clear, writeRegister1, writeRegister2: in STD_LOGIC;
+	registerAddress1, registerAddress2, register1Read, register1Write: in STD_LOGIC_VECTOR(3 DOWNTO 0);
+	inputedDataR1, inputedDataR2 : in STD_LOGIC_VECTOR(15 DOWNTO 0);
+	readData1, readData2: out STD_LOGIC_VECTOR(15 DOWNTO 0);
+	
+	valorR0000, valorR0001, valorR0010, valorR0011, 
+	valorR0100, valorR0101, valorR0110, valorR0111, 
+	valorR1000, valorR1001, valorR1010, valorR1011, 
+	valorR1100, valorR1101, valorR1110, valorR1111 : out std_logic_vector(15 downto 0);
+	
+	boolRecebeu, resultadoComparacao : out std_logic_vector(15 downto 0);
+	
+	muxWrite : out std_logic;
+	vaiEscreverAqui, writeQueChegou : out std_logic_vector(3 downto 0)
+	
+	);
+end RegisterBank_4x16;
+	
+architecture skeleton of RegisterBank_4x16 is 
+
+	component RegisterDFlipFlop_x16 is 
+		port (
+		clock, reset, enable: in STD_LOGIC;
+		input: in STD_LOGIC_VECTOR(15 DOWNTO 0);
+		output: out STD_LOGIC_VECTOR(15 DOWNTO 0));
+	end component;
+	
+	component Multiplexer_4x16 is
+		Port ( 	
+		Selector : in  STD_LOGIC_VECTOR (3 downto 0);
+		input_A, input_B, input_C, input_D, input_E, input_F, input_G, input_H: in  STD_LOGIC_VECTOR (15 downto 0);
+		input_I, input_J, input_K, input_L, input_M, input_N, input_O, input_P: in  STD_LOGIC_VECTOR (15 downto 0);
+		output   : out STD_LOGIC_VECTOR (15 downto 0));
+	end component;
+	
+	component Demultiplexer_4x1 is
+		Port ( 
+		Selector : in  STD_LOGIC_VECTOR(3 downto 0);
+		input: in  STD_LOGIC;
+		output_A, output_B, output_C, output_D, output_E, output_F, output_G, output_H   : out STD_LOGIC;
+		output_I, output_J, output_K, output_L, output_M, output_N, output_O, output_P   : out STD_LOGIC);
+	end component;
+	
+	component Demultiplexer_4x16 is
+		 Port ( Selector : in  STD_LOGIC_VECTOR(3 downto 0);
+				  input: in  STD_LOGIC_VECTOR (15 downto 0);
+				  output_A, output_B, output_C, output_D, output_E, output_F, output_G, output_H   : out STD_LOGIC_VECTOR (15 downto 0);
+				  output_I, output_J, output_K, output_L, output_M, output_N, output_O, output_P   : out STD_LOGIC_VECTOR (15 downto 0));
+	end component;
+	
+	component ArithmeticalComparator_x16 is
+		 Port (
+				opcodeComp : STD_LOGIC_VECTOR(2 downto 0);
+				input_A, input_B : STD_LOGIC_VECTOR (15 downto 0);
+				output : out STD_LOGIC_VECTOR (15 downto 0));
+	end component;
+	
+	component Multiplexer_1x4 is
+		 Port ( Selector : in  STD_LOGIC;
+				  input_A, input_B: in  STD_LOGIC_VECTOR (3 downto 0);
+				  output   : out STD_LOGIC_VECTOR (3 downto 0));
+	end component;
+	
+	component SignalShorter_16x1 is
+		 Port (
+				input : in STD_LOGIC_VECTOR (15 downto 0);
+				output : out STD_LOGIC);
+	end component;
+	
+	component SignalExtender_4x16 is
+		 Port (
+				input : STD_LOGIC_VECTOR (3 downto 0);
+				output : out STD_LOGIC_VECTOR (15 downto 0));
+	end component;
+	
+	component Multiplexer_1x16 is
+		 Port ( Selector : in  STD_LOGIC;
+				  input_A, input_B: in  STD_LOGIC_VECTOR (15 downto 0);
+				  output   : out STD_LOGIC_VECTOR (15 downto 0));
+	end component;
+	
+	signal resultMux2, registerValueIm1, registerValueIm2, dependWrite1orWrite2, resultComp1, resultComp2, resultComp3, output00, output01, output02, output03, output04, output05, output06, output07, output08, output09, output10, output11, output12, output13, output14, output15 : STD_LOGIC_VECTOR(15 downto 0);
+	signal inputDataR2, inputData00, inputData01, inputData02, inputData03, inputData04, inputData05, inputData06, inputData07, inputData08, inputData09, inputData10, inputData11, inputData12, inputData13, inputData14, inputData15 : STD_LOGIC_VECTOR(15 downto 0);
+	signal readDepend, writeDepend, dependWrite1orWrite2Mux1, writeRegister100, writeRegister101, writeRegister102, writeRegister103, writeRegister104, writeRegister105, writeRegister106, writeRegister107, writeRegister108, writeRegister109, writeRegister110, writeRegister111, writeRegister112, writeRegister113, writeRegister114, writeRegister115 : STD_LOGIC;
+	signal readRegister, writeRegister : STD_LOGIC_VECTOR(3 downto 0);
+		
+		BEGIN
+		
+			Comp1: ArithmeticalComparator_x16 port map("000", registerValueIm1, "0000000000000000", resultComp1);
+			Comp2: ArithmeticalComparator_x16 port map("000", registerValueIm2, "0000000000000000", resultComp2);
+			Comp3: ArithmeticalComparator_x16 port map("000", dependWrite1orWrite2, "0000000000000001", resultComp3);
+			
+			Shtr1: SignalShorter_16x1 port map(resultComp1, readDepend);
+			Shtr2: SignalShorter_16x1 port map(resultComp2, writeDepend);
+			Shtr3: SignalShorter_16x1 port map(resultComp3, dependWrite1orWrite2Mux1);
+			
+			Ext1: SignalExtender_4x16 port map(register1Read, registerValueIm1);
+			Ext2: SignalExtender_4x16 port map(register1Write, registerValueIm2);
+			Ext3: SignalExtender_4x16 port map(writeRegister, dependWrite1orWrite2);
+			
+			Mux1: Multiplexer_4x16 port map (readRegister, output00, output01, output02, output03, output04, output05, output06, output07, output08, output09, output10, output11, output12, output13, output14, output15, readData1);
+			Mux2: Multiplexer_4x16 port map (registerAddress2, output00, output01, output02, output03, output04, output05, output06, output07, output08, output09, output10, output11, output12, output13, output14, output15, readData2);
+			Mux3: Multiplexer_1x4 port map(readDepend, register1Read, registerAddress1, readRegister);
+			Mux4: Multiplexer_1x4 port map(writeDepend, register1Write, registerAddress1, writeRegister);
+			Mux5: Multiplexer_1x16 port map(writeRegister2, inputedDataR1, inputedDataR2, resultMux2);
+			Mux6: Multiplexer_1x16 port map(dependWrite1orWrite2Mux1, resultMux2, inputDataR2, inputData01);
+			
+			writeQueChegou <= register1Write;
+			
+			Dmux1: Demultiplexer_4x16 port map(writeRegister, inputedDataR1, inputData00, inputDataR2, inputData02, inputData03, inputData04, inputData05, inputData06, inputData07, inputData08, inputData09, inputData10, inputData11, inputData12, inputData13, inputData14, inputData15);
+			Dmux2: Demultiplexer_4x1 port map(writeRegister, writeRegister1, writeRegister100, writeRegister101, writeRegister102, writeRegister103, writeRegister104, writeRegister105, writeRegister106, writeRegister107, writeRegister108, writeRegister109, writeRegister110, writeRegister111, writeRegister112, writeRegister113, writeRegister114, writeRegister115);
+			
+									
+			
+			R00: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister100, 						inputData00, output00); -- $zero
+			R01: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister101 OR writeRegister2, inputData01, output01); -- $high
+			R02: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister102, 						inputData02, output02); -- $low
+			R03: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister103, 						inputData03, output03); -- $bool
+			R04: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister104, 						inputData04, output04); -- $s0
+			R05: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister105, 						inputData05, output05); -- $s1
+			R06: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister106, 						inputData06, output06); -- $s2
+			R07: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister107, 						inputData07, output07); -- $s3
+			R08: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister108, 						inputData08, output08); -- $s4
+			R09: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister109, 						inputData09, output09); -- $s5
+			R10: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister110, 						inputData10, output10); -- $s6
+			R11: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister111, 						inputData11, output11); -- $s7
+			R12: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister112, 						inputData12, output12); -- $t0
+			R13: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister113, 						inputData13, output13); -- $t1
+			R14: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister114, 						inputData14, output14); -- $t2
+			R15: RegisterDFlipFlop_x16 port map (clock, clear, writeRegister115, 						inputData15, output15); -- $t3
+	
+		
+			valorR0000 <= output00;
+			valorR0001 <= output01;
+			valorR0010 <= output02;
+			valorR0011 <= output03;
+			valorR0100 <= output04;
+			valorR0101 <= output05;
+			valorR0110 <= output06;
+			valorR0111 <= output07;
+			valorR1000 <= output08;
+			valorR1001 <= output09;
+			valorR1010 <= output10;
+			valorR1011 <= output11;
+			valorR1100 <= output12;
+			valorR1101 <= output13;
+			valorR1110 <= output14;
+			valorR1111 <= output15;
+			
+			
+			boolRecebeu <= inputData03;
+			resultadoComparacao <= resultComp2;
+
+			
+			muxWrite <= writeDepend;
+			vaiEscreverAqui <= writeRegister;
+			
+end skeleton;
