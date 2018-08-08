@@ -1,2 +1,2 @@
 # Processador_FabioVitor
-Trabalho final da disciplina de Arquitetura e Organização de Computadores: Um processador de 16 bits
+Final Work of Computer Architecture and Organization: A 16-bit processor
